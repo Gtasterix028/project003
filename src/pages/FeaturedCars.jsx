@@ -17,7 +17,7 @@
 //     <div className="text-3xl font-bold p-10 font-[sourceSans]">Recently Added Cars</div>
 //         <div className="w-full lg:pl-0 ">
 //           <div className="md:grid md:grid-cols-4 mx-2">
-            
+
 //             {posts?.slice(0,4).map((items, index) => {
 //               return (
 //                 <div key={index}>
@@ -28,7 +28,7 @@
 //               );
 //             })}
 //           </div>
-          
+
 //         </div>
 
 //     </>
@@ -36,7 +36,6 @@
 // };
 
 // export default FeaturedCars;
-
 
 // import React from "react";
 import fastapiIcon from "../assets/feature_img/devicon_fastapi@2x.png";
@@ -82,10 +81,10 @@ const FeatureSection = () => {
 
         {/* Paragraph */}
         <p className="text-base sm:text-lg md:text-xl text-[#6C6C6C] mb-6 sm:mb-8 text-center sm:text-left max-w-8xl">
-          Lorem ipsum dolor sit amet consectetur. Orci velit enim donec luctus
-          dignissim amet parturient. Tellus malesuada nunc amet quis nisl
-          pharetra tempor vulputate. nec luctus dignissim amet parturient.
-          Tellus malesuada nunc amet quis nisl pharetra tempor vulputate.
+          From trusted sellers to verified listings, our platform makes it
+          simple to browse, compare, and drive away with confidence. Whether
+          you&apos;re buying your first car or upgrading, we make the journey fast,
+          secure, and hassle-free.
         </p>
 
         {/* Cards Container */}

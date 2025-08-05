@@ -19,13 +19,12 @@ const HomeSection = () => {
       >
         {/* Title */}
         <h1 className="mt-22 lg:mt-4 font-semibold text-white font-semibold max-w-[90%] sm:max-w-[80%] lg:max-w-[70%] leading-snug text-2xl sm:text-2xl md:text-3xl lg:text-4xl mb-4">
-          Welcome to Caryanam — Explore <br className="hidden sm:block" /> Our Latest Deals!
+          Welcome to Caryanamindia — Explore <br className="hidden sm:block" /> Our Latest Deals!
         </h1>
 
         {/* Paragraph */}
         <p className="font-inter text-white font-light text-center leading-relaxed max-w-[95%] sm:max-w-[60%] md:max-w-[70%] lg:max-w-[57%] text-base sm:text-lg md:text-lg lg:text-1xl">
-          Lorem ipsum dolor sit amet consectetur. Adipiscing morbi amet eget id
-          nullam sit viverra. Nibh et auctor condimentum varius ac nulla.
+         We provide best cars with the best prices. We are expert in car rental. Enjoy your holiday with us. We make your drive memorable.
         </p>
       </div>
       <style>

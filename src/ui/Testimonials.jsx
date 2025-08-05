@@ -25,7 +25,7 @@ const Testimonials = () => {
       id: 4,
       name: "Pranav",
       role: "Customer",
-  text: "Loved the verified listings. It gave me confidence to buy without worry.",
+      text: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     },
   ];
 
