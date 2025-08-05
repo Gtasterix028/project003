@@ -41,6 +41,7 @@ export function StickyNavbar() {
   const [showNavbar, setShowNavbar] = useState(true);
 const [lastScrollY, setLastScrollY] = useState(0);
 const [activeTab, setActiveTab] = useState("Home");
+const [scrolled, setScrolled] = useState(false); // <-- add this line
 
 useEffect(() => {
   const handleScroll = () => {
@@ -50,6 +51,13 @@ useEffect(() => {
       setShowNavbar(true);
     }
     setLastScrollY(window.scrollY);
+
+    // Set scrolled state for home page background
+    if (window.scrollY > 0) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
   };
 
   window.addEventListener("scroll", handleScroll);
@@ -146,7 +154,7 @@ useEffect(() => {
     // DEALER Role Dashboard Items
     if (userRole === "DEALER") {
       navListMenuItems.push(
-        { title: "Dashboard", link: `/dealer/${jwtDecodes?.dealerId}` },
+        { title: "Car", link: `/dealer/${jwtDecodes?.dealerId}` },
         { title: "Premium Cars", link: `/dealer/premium/${jwtDecodes?.dealerId}` },
         { title: "B2B", link: `/dealer/B2B` },
         { title: "Live Cars", link: "/dealer/live/cars" },
@@ -162,7 +170,7 @@ useEffect(() => {
     // USER Role Dashboard Items
     if (userRole === "USER") {
       navListMenuItems.push(
-        { title: "Dashboard", link: `/user/${jwtDecodes?.userId}` },
+        { title: "Car", link: `/user/${jwtDecodes?.userId}` },
         { title: "Sell Car", link: `/sellcarlist` },
         { title: "All Request", link: `/pendinrequest/${jwtDecodes?.userId}` },
         { title: "Favourite", link: `/user/${jwtDecodes?.userId}/favorite` }
@@ -172,7 +180,7 @@ useEffect(() => {
     // INSPECTOR Role Dashboard Items
     if (userRole === "INSPECTOR") {
       navListMenuItems.push(
-        { title: "Dashboard", link: `/inspector/car` },
+        { title: "Car", link: `/inspector/car` },
         { title: "User Cars", link: `/inspector/user/cars` }
       );
     }
@@ -180,7 +188,7 @@ useEffect(() => {
     // SALESPERSON Role Dashboard Items
     if (userRole === "SALESPERSON") {
       navListMenuItems.push(
-        { title: "Dashboard", link: "/sales/salesDealers" },
+        { title: "Car", link: "/sales/salesDealers" },
         { title: "User Cars", link: `/seller/request/active` },
         { title: "B2B", link: `/Seller/b2b/pending` },
         { title: "Bidding Car", link: "/sales/biddingcar" }
@@ -214,31 +222,31 @@ useEffect(() => {
           <MenuHandler>
             <Typography as="div" variant="small" className="font-medium">
               <ListItem
-                className={`flex items-center gap-2 p-3 font-medium text-white hover:bg-indigo-400`}
+                className={`flex items-center gap-2 p-3 font-medium text-white hover:bg-[#50d71e]`}
                 selected={isMenuOpen || isMobileMenuOpen}
                 onClick={() => setIsMobileMenuOpen((cur) => !cur)}
               >
                 Dashboard
                 <ChevronDownIcon
                   strokeWidth={2.5}
-                  className={`hidden h-3 w-3 transition-transform lg:block ${isMenuOpen ? "rotate-180" : ""
+                  className={`hidden h-3 w-3 transition-transform sm:block ${isMenuOpen ? "rotate-180" : ""
                     }`}
                 />
                 <ChevronDownIcon
                   strokeWidth={2.5}
-                  className={`block h-3 w-3 transition-transform lg:hidden ${isMobileMenuOpen ? "rotate-180" : ""
+                  className={`block h-3 w-3 transition-transform sm:hidden ${isMobileMenuOpen ? "rotate-180" : ""
                     }`}
                 />
               </ListItem>
             </Typography>
           </MenuHandler>
-          <MenuList className="hidden max-w-screen-xl rounded-xl lg:block bg-[#626deb] border-none">
+          <MenuList className="hidden max-w-screen-xl rounded-xl sm:block bg-[#000] border-none">
             <ul className="grid grid-cols-2 gap-x-8 gap-y-2 outline-none outline-0 min-w-[350px]">
               {renderItems}
             </ul>
           </MenuList>
         </Menu>
-        <div className="block lg:hidden">
+        <div className="block sm:hidden">
           <Collapse open={isMobileMenuOpen}>
             <ul className="grid grid-cols-2 gap-x-8 gap-y-2 outline-none outline-0 min-w-[250px]">
               {renderItems}
@@ -255,7 +263,7 @@ useEffect(() => {
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
+      () => window.innerWidth >= 640 && setOpenNav(false)
     );
     // if(location.pathname !== priv.location.pathname){
     //   window.scrollTo(0, 0);
@@ -321,8 +329,10 @@ useEffect(() => {
   return (
     <div
       className={`w-full lg:h-[16vh] fixed top-0 left-0 z-50 transition-transform duration-300 ${
-        isHomePage 
-          ? "bg-white/10 backdrop-blur-md" 
+        isHomePage
+          ? scrolled
+            ? "bg-black/90 backdrop-blur-md"
+            : "bg-white/10 backdrop-blur-md"
           : "bg-black/90 backdrop-blur-md"
       } ${showNavbar ? "translate-y-0" : "-translate-y-full"}`}
     >
@@ -342,8 +352,8 @@ useEffect(() => {
           </div> */}
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6 lg:gap-10 text-white">
+        {/* Desktop and Tablet Navigation */}
+        <div className="hidden sm:flex items-center gap-6 lg:gap-10 text-white">
           {[
             { label: "Home", path: "/" }, 
             { label: "Premium Cars", path: "/premiumcarlist" }, 
@@ -382,8 +392,8 @@ useEffect(() => {
           )}
         </div>
 
-        {/* Login/Register/Profile for md and above */}
-        <div className="hidden md:flex items-center justify-center bg-white rounded-full px-4 py-1 shadow hover:scale-105 transition">
+        {/* Login/Register/Profile for sm and above */}
+        <div className="hidden sm:flex items-center justify-center bg-white rounded-full px-4 py-1 shadow hover:scale-105 transition">
           {token ? (
             <Profile
               userId={UserId}
@@ -417,7 +427,7 @@ useEffect(() => {
 
         {/* Hamburger for Mobile */}
         <div
-          className="md:hidden flex flex-col justify-between w-7 h-5 cursor-pointer z-50"
+          className="sm:hidden flex flex-col justify-between w-7 h-5 cursor-pointer z-50"
           onClick={() => setOpenNav(!openNav)}
         >
           {!openNav ? (

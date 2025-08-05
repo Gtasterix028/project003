@@ -1,39 +1,40 @@
-import   { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { CountUp } from "countup.js";
 import PropTypes from "prop-types";
- 
+
 import carKeyIcon from "../assets/startsection/Group 16.png";
 import carKeyIcon1 from "../assets/startsection/Group 17.png";
 import carKeyIcon2 from "../assets/startsection/Group 18.png";
 import carKeyIcon3 from "../assets/startsection/Group 19.png";
 
- 
-// Custom counter using ref and useEffect (fix for CountUp DOM timing issue)
+// Counter that starts only when the element is in view
 const AnimatedCount = ({ end }) => {
   const countRef = useRef(null);
- 
+  const isInView = useInView(countRef, { once: true });
+
   useEffect(() => {
-    const countUp = new CountUp(countRef.current, end, {
-      duration: 2,
-      startVal: 0,
-    });
- 
-    if (!countUp.error) {
-      countUp.start();
-    } else {
-      console.error(countUp.error);
+    if (isInView && countRef.current) {
+      const countUp = new CountUp(countRef.current, end, {
+        duration: 2,
+        startVal: 0,
+      });
+
+      if (!countUp.error) {
+        countUp.start();
+      } else {
+        console.error(countUp.error);
+      }
     }
-  }, [end]);
- 
+  }, [isInView, end]);
+
   return <span ref={countRef}>0</span>;
 };
 
-// Add PropTypes validation
 AnimatedCount.propTypes = {
   end: PropTypes.number.isRequired,
 };
- 
+
 const stats = [
   {
     icon: <img src={carKeyIcon} alt="Car Icon" className="w-11 h-11" />,
@@ -56,7 +57,7 @@ const stats = [
     label: "Years Of Experience",
   },
 ];
- 
+
 const StatsSection = () => {
   return (
     <motion.div
@@ -95,11 +96,11 @@ const StatsSection = () => {
             >
               {stat.icon}
             </motion.div>
- 
+
             <h3 className="text-5xl font-extrabold mt-6">
               <AnimatedCount end={stat.number} />
             </h3>
- 
+
             <p className="text-2xl font-semibold mt-6">+{stat.label}</p>
           </motion.div>
         ))}
@@ -107,5 +108,5 @@ const StatsSection = () => {
     </motion.div>
   );
 };
- 
+
 export default StatsSection;

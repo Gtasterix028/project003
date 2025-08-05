@@ -80,7 +80,7 @@ const AboutUs = () => {
               <br /> Journey
             </span>{" "}
             Starts Here
-          </h2>
+          </h2>  
 
           {/* Circle & Car */}
           <div className="relative flex justify-center items-center w-full min-h-[300px]">
@@ -98,17 +98,16 @@ const AboutUs = () => {
 
           {/* Paragraph */}
           <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-[95%] mx-auto">
-            Lorem Ipsum Dolor Sit Amet Consectetur. Ultrices Id Vulputate Nisl
-            Ut. Sem Pharetra Elementum Vitae Purus Egestas Id Amet In.
+            2 Free Vehicle Servicings Every customer receives two complimentary services with their used car purchase - ensuring peace of mind after purchase.
           </p>
 
           {/* Checklist in 2 columns on tablets */}
           <div className="hidden md:flex md:flex-wrap md:gap-y-4 md:gap-x-6 md:max-w-[95%] md:mx-auto">
             {[
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
+              "LCertified Dealer Network All our listings come from USCAR Dealer Association members - trusted, authorized dealers only.",
+              "LWide Dealer Network With a large number of dealers across regions, we bring you unmatched variety and availability.",
+              "Budget-Friendly Options Looking for premium or pocket-friendly? We offer multiple vehicle choices to suit every budget.",
+              "Assured Quality & Trust Buy with confidence - all vehicles are verified for authenticity, documents, and performance.",
             ].map((item, idx) => (
               <div
                 key={idx}
@@ -140,11 +139,12 @@ const AboutUs = () => {
           {/* Checklist for mobile - single column */}
           <ul className="space-y-4 text-left max-w-[95%] mx-auto md:hidden">
             {[
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              "Lorem Ipsum Dolor Sit Amet Consectetur.",
-            ].map((item, idx) => (
+           
+              "LCertified Dealer Network All our listings come from USCAR Dealer Association members - trusted, authorized dealers only.",
+              "LWide Dealer Network With a large number of dealers across regions, we bring you unmatched variety and availability.",
+              "Budget-Friendly Options Looking for premium or pocket-friendly? We offer multiple vehicle choices to suit every budget.",
+              "Assured Quality & Trust Buy with confidence - all vehicles are verified for authenticity, documents, and performance.",
+             ].map((item, idx) => (
               <li
                 key={idx}
                 className="group flex items-start gap-3 cursor-pointer transition-all"
@@ -205,18 +205,18 @@ const AboutUs = () => {
               <span className="text-[#FF7101]">Car Journey</span> Starts Here
             </h2>
 
-            <p className="text-gray-500 text-lg leading-relaxed mb-2 max-w-[90%]">
-              Lorem Ipsum Dolor Sit Amet Consectetur. Ultrices Id Vulputate Nisl
-              Ut. Sem Pharetra Elementum Vitae Purus Egestas Id Amet In.
-            </p>
+            <p className="text-gray-500 text-lg leading-relaxed mb-2 max-w-[100%]">
+            2 Free Vehicle Servicings Every customer receives two complimentary services with their used car purchase - ensuring peace of mind after purchase.
+         </p>
 
             <ul className="space-y-4 text-left">
               {[
-                "Lorem Ipsum Dolor Sit Amet Consectetur.",
-                "Lorem Ipsum Dolor Sit Amet Consectetur.",
-                "Lorem Ipsum Dolor Sit Amet Consectetur.",
-                "Lorem Ipsum Dolor Sit Amet Consectetur.",
-              ].map((item, idx) => (
+             
+              "Certified Dealer Network  all our listings come from USCAR Dealer Association members - trusted, authorized dealers only.",
+              "Wide Dealer Network with a large number of dealers across regions, we bring you unmatched variety and availability.",
+              "Budget-Friendly Options looking for premium or pocket-friendly? We offer multiple vehicle choices to suit every budget.",
+              "Assured Quality & Trust buy with confidence - all vehicles are verified for authenticity, documents, and performance.",
+             ].map((item, idx) => (
                 <li
                   key={idx}
                   className="group flex items-start gap-3 cursor-pointer transition-all"
@@ -247,6 +247,7 @@ const AboutUs = () => {
         </div>
       </div>
     </section>
+    
   );
 };
 

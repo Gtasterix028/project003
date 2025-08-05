@@ -7,25 +7,25 @@ const Testimonials = () => {
       id: 1,
       name: "Shubham Patil",
       role: "Customer",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+ text: "Sold my old car within days! Great platform with quick responses and easy listing.",
     },
     {
       id: 2,
       name: "Ashish",
       role: "Customer",
-      text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  text: "Found my dream car at a great price. The process was smooth and transparent.",
     },
     {
       id: 3,
       name: "Vinayak",
       role: "Customer",
-      text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+  text: "Bought and sold cars here multiple times. Always a trustworthy experience!",
     },
     {
       id: 4,
       name: "Pranav",
       role: "Customer",
-      text: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  text: "Loved the verified listings. It gave me confidence to buy without worry.",
     },
   ];
 
