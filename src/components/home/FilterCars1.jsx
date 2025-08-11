@@ -14,23 +14,25 @@ import {
   FormControlLabel,
   TextField,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-const FilterPremiumCars1 = ({ setUrlState }) => {
+const FilterCars1 = ({ setUrlState }) => {
   const { data: brandData } = useGetOnlyBrandsQuery();
   const brands = brandData?.list.map((item) => item.brand) || [];
+  const navigate = useNavigate();
 
   const [selectedBrand, setSelectedBrand] = useState("");
   const [modelOptions, setModelOptions] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
+   const [showFilters, setShowFilters] = useState(true);
   const [value, setValue] = useState([1500000, 100000000]);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [underTwoLakh, setUnderTwoLakh] = useState(false); // New state for the checkbox
-  const [twoLakhFiveLakh, setTwoLakhFiveLakh] = useState(false); // New state for the checkbox
-  const [fiveToEightLakh, setFiveToEightLakh] = useState(false); // New state for the checkbox  const [twoLakhFiveLakh, setTwoLakhFiveLakh] = useState(false); // New state for the checkbox
-  const [eightToTenLakh, setEightToTenLakh] = useState(false); // New state for the checkbox
-  const [aboveTenLakh, setAboveTenLakh] = useState(false); // New state for the checkbox
+  // const [minPrice, setMinPrice] = useState("");
+  // const [maxPrice, setMaxPrice] = useState("");
+  // const [underTwoLakh, setUnderTwoLakh] = useState(false); // New state for the checkbox
+  // const [twoLakhFiveLakh, setTwoLakhFiveLakh] = useState(false); // New state for the checkbox
+  // const [fiveToEightLakh, setFiveToEightLakh] = useState(false); // New state for the checkbox  const [twoLakhFiveLakh, setTwoLakhFiveLakh] = useState(false); // New state for the checkbox
+  // const [eightToTenLakh, setEightToTenLakh] = useState(false); // New state for the checkbox
+  // const [aboveTenLakh, setAboveTenLakh] = useState(false); // New state for the checkbox
 
   const { data: variantData } = useGetVariantsQuery(selectedBrand, {
     skip: !selectedBrand,
@@ -77,6 +79,7 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
   };
 
   const submitHandle = (e) => {
+  
     e.preventDefault();
     const minPrice = value[0]; // Minimum price from the slider
     const maxPrice = value[1]; // Maximum price from the slider
@@ -90,7 +93,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
       MinPrice: minPrice,
       MaxPrice: maxPrice,
     };
-    setUrlState(url);
+    // setUrlState(url);
+    
+    navigate('/carlist',{ state: { filterCar: url } })  
+
   };
 
   const resetForm = () => {
@@ -105,11 +111,11 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
       fuelType: "", // Reset fuel type
       transmission: "", // Reset transmission
     });
-    setUnderTwoLakh(false); // Reset the checkbox
-    setTwoLakhFiveLakh(false);
-    setFiveToEightLakh(false);
-    setEightToTenLakh(false);
-    setAboveTenLakh(false);
+    // setUnderTwoLakh(false); // Reset the checkbox
+    // setTwoLakhFiveLakh(false);
+    // setFiveToEightLakh(false);
+    // setEightToTenLakh(false);
+    // setAboveTenLakh(false);
 
     setUrlState({
       area: "",
@@ -178,88 +184,88 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
     { transmission: "Manual" },
   ];
 
-  const handleSliderChange = (event, newValue) => {
-    let [min, max] = newValue;
+  // const handleSliderChange = (event, newValue) => {
+  //   let [min, max] = newValue;
 
-    // Ensure the min slider value takes steps of 50000 until 1000000
-    if (min < 1000000) {
-      min = Math.floor(min / 50000) * 50000;
-    } else {
-      min = Math.floor(min / 500000) * 500000;
-    }
+  //   // Ensure the min slider value takes steps of 50000 until 1000000
+  //   if (min < 1000000) {
+  //     min = Math.floor(min / 50000) * 50000;
+  //   } else {
+  //     min = Math.floor(min / 500000) * 500000;
+  //   }
 
-    // Ensure the max slider value follows its logic
-    if (max < 1000000) {
-      max = Math.floor(max / 50000) * 50000;
-    } else {
-      max = Math.floor(max / 500000) * 500000;
-    }
+  //   // Ensure the max slider value follows its logic
+  //   if (max < 1000000) {
+  //     max = Math.floor(max / 50000) * 50000;
+  //   } else {
+  //     max = Math.floor(max / 500000) * 500000;
+  //   }
 
-    // Apply constraints
-    if (min > max) {
-      min = max; // Ensure min does not exceed max
-    }
+  //   // Apply constraints
+  //   if (min > max) {
+  //     min = max; // Ensure min does not exceed max
+  //   }
 
-    // Update state
-    setValue([min, max]);
-    setMinPrice(min.toString());
-    setMaxPrice(max.toString());
-  };
-  const calculateStep = (value) => {
-    return value < 7000000 ? 50000 : 500000;
-  };
+  //   // Update state
+  //   setValue([min, max]);
+  //   setMinPrice(min.toString());
+  //   setMaxPrice(max.toString());
+  // };
+  // const calculateStep = (value) => {
+  //   return value < 7000000 ? 50000 : 500000;
+  // };
 
-  const handleMinPriceChange = (e) => {
-    const min = parseInt(e.target.value.replace(/,/g, ""));
-    if (
-      !isNaN(min) &&
-      min >= 0 &&
-      (maxPrice === "" || min <= parseInt(maxPrice.replace(/,/g, "")))
-    ) {
-      setMinPrice(e.target.value);
-      setValue([min, value[1] !== null ? value[1] : 100000000]);
-    } else if (min > parseInt(maxPrice.replace(/,/g, ""))) {
-      setMinPrice(maxPrice);
-      setValue([
-        parseInt(maxPrice.replace(/,/g, "")),
-        parseInt(maxPrice.replace(/,/g, "")),
-      ]);
-    } else {
-      setMinPrice("");
-    }
-  };
+  // const handleMinPriceChange = (e) => {
+  //   const min = parseInt(e.target.value.replace(/,/g, ""));
+  //   if (
+  //     !isNaN(min) &&
+  //     min >= 0 &&
+  //     (maxPrice === "" || min <= parseInt(maxPrice.replace(/,/g, "")))
+  //   ) {
+  //     setMinPrice(e.target.value);
+  //     setValue([min, value[1] !== null ? value[1] : 100000000]);
+  //   } else if (min > parseInt(maxPrice.replace(/,/g, ""))) {
+  //     setMinPrice(maxPrice);
+  //     setValue([
+  //       parseInt(maxPrice.replace(/,/g, "")),
+  //       parseInt(maxPrice.replace(/,/g, "")),
+  //     ]);
+  //   } else {
+  //     setMinPrice("");
+  //   }
+  // };
 
   // Handle manual input for max price
-  const handleMaxPriceChange = (e) => {
-    const max = parseInt(e.target.value.replace(/,/g, ""));
-    if (
-      !isNaN(max) &&
-      max <= 100000000 &&
-      (minPrice === "" || max >= parseInt(minPrice.replace(/,/g, "")))
-    ) {
-      setMaxPrice(e.target.value);
-      setValue([value[0] !== null ? value[0] : 0, max]);
-    } else if (max < parseInt(minPrice.replace(/,/g, ""))) {
-      setMaxPrice(minPrice);
-      setValue([
-        parseInt(minPrice.replace(/,/g, "")),
-        parseInt(minPrice.replace(/,/g, "")),
-      ]);
-    } else {
-      setMaxPrice("");
-    }
-  };
+  // const handleMaxPriceChange = (e) => {
+  //   const max = parseInt(e.target.value.replace(/,/g, ""));
+  //   if (
+  //     !isNaN(max) &&
+  //     max <= 100000000 &&
+  //     (minPrice === "" || max >= parseInt(minPrice.replace(/,/g, "")))
+  //   ) {
+  //     setMaxPrice(e.target.value);
+  //     setValue([value[0] !== null ? value[0] : 0, max]);
+  //   } else if (max < parseInt(minPrice.replace(/,/g, ""))) {
+  //     setMaxPrice(minPrice);
+  //     setValue([
+  //       parseInt(minPrice.replace(/,/g, "")),
+  //       parseInt(minPrice.replace(/,/g, "")),
+  //     ]);
+  //   } else {
+  //     setMaxPrice("");
+  //   }
+  // };
 
   return (
-    <div className="border-2 shadow-lg rounded-lg m-2">
+    <div className="border-2 shadow-lg rounded-lg m-2 mt-10 ">
       <div className="flex justify-between">
-        <div className="-mt-10 text-black text-3xl font-[sourceSans] font-bold flex hover:rounded-2xl hover:shadow-2xl">
+        {/* <div className="-mt-10 text-white text-3xl font-[sourceSans] font-bold flex hover:rounded-2xl hover:shadow-2xl">
           Premium Cars
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <button
             type="button"
-            className="-mt-10 text-black text-lg font-bold font-[sourceSans] flex hover:rounded-2xl hover:shadow-2xl "
+            className="-mt-10 text-white text-lg font-bold font-[sourceSans] flex hover:rounded-2xl hover:shadow-2xl "
             onClick={() => setShowFilters(!showFilters)}
           >
             <span className="mt-[6px] mr-1">
@@ -267,68 +273,29 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
             </span>
             Filter
           </button>
-        </div>
+        </div> */}
       </div>
 
       <Card className={`p-4 ${showFilters ? "block" : "hidden bg-gray-100"}`}>
-        <div className="space-y-4">
-          <form onSubmit={submitHandle}>
+        <div className=" h-[350px] space-y-4">
+          <form onSubmit={submitHandle} >
             <div>
-              <p className="font-bold mb-5 text-xl text-indigo-400">Filters</p>
+              <p className="font-semibold mb-5 text-xl text-black">Let&apos;s Find Your Dream Car </p>
             </div>
+            <hr className="mb-6 border-t-2 border-gray-200" />
             <div className="md:mb-1 md:grid md:grid-cols-5 md:gap-6 md:items-center">
-              <div>
-                <Typography
-                  variant="h6"
-                  color="blue-gray"
-                  className=" font-bold text-black font-[sourceSans] text-lg"
-                >
-                  Price Range
-                </Typography>
+              
+               
 
-                <div className="flex justify-center items-center">
-                  <div style={{ width: "300px" }}></div>
-                </div>
-                <div className="flex flex-col gap-3 justify-between">
-                  <div className="flex justify-between">
-                    <div className="flex">
-                      <span className="text-black p-2 font-[sourceSans]">
-                        ₹{formattedAmountMin}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <span className="text-black p-2 font-[sourceSans]">
-                        ₹{formattedAmountMax}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex items-center justify-center">
-                  <div className="flex text-center font-bold font-[sourceSans] text-black">
-                    ₹15L
-                  </div>
-                  <div className="w-full flex items-center px-2 mx-1">
-                    <Slider
-                      className="w-full"
-                      color="black"
-                      value={value}
-                      onChange={handleSliderChange}
-                      valueLabelDisplay="auto"
-                      min={1500000}
-                      max={100000000}
-                      step={calculateStep(value[1])}
-                      disableSwap
-                    />
-                  </div>
-                  <div className="flex text-center font-bold font-[sourceSans] text-black">
-                    ₹10Cr
-                  </div>
-                </div>
-              </div>
+                
+              
+                
+            
               <div>
+                <leble className="font-bold" >Area</leble>
                 <Autocomplete
                   id="area-autocomplete"
-                  className="my-1"
+                  className="my-5 "
                   freeSolo
                   options={AreaData}
                   getOptionLabel={(option) => option.area}
@@ -352,10 +319,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                     <TextField {...params} label="Area" />
                   )}
                 />
-
+                <leble className="font-bold">Year</leble>
                 <Autocomplete
                   id="year-autocomplete"
-                  className="my-1"
+                  className="my-5"
                   freeSolo
                   options={Year}
                   getOptionLabel={(option) => option.year.toString()}
@@ -381,9 +348,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                 />
               </div>
               <div>
+              <leble className="font-bold">Brands</leble>
                 <Autocomplete
                   id="brand-autocomplete"
-                  className="my-1"
+                  className="my-5"
                   freeSolo
                   options={brands}
                   getOptionLabel={(option) => option}
@@ -394,10 +362,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                     <TextField {...params} label="Brands" />
                   )}
                 />
-
+                  <leble className="font-bold">ModelOptions</leble>
                 <Autocomplete
                   id="model-autocomplete"
-                  className="my-1"
+                  className="my-5"
                   freeSolo
                   options={modelOptions}
                   getOptionLabel={(option) => option}
@@ -410,9 +378,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                 />
               </div>
               <div>
+              <leble className="font-bold">FuelType</leble>
                 <Autocomplete
                   id="fueltype-autocomplete"
-                  className="my-1"
+                  className="my-5"
                   freeSolo
                   options={FuleType}
                   getOptionLabel={(option) => option.fuelType}
@@ -438,10 +407,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                     <TextField {...params} label="Fuel Type" />
                   )}
                 />
-
+                 <leble className="font-bold">Transmission</leble>
                 <Autocomplete
                   id="transmission-autocomplete"
-                  className="my-1"
+                  className="my-5"
                   freeSolo
                   options={Transmission}
                   getOptionLabel={(option) => option.transmission}
@@ -468,13 +437,11 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                   )}
                 />
               </div>
-              <div className="flex gap-5 md:flex-col lg:flex">
-                <Button type="submit" className="bg-indigo-400">
+              <div className="flex gap-5 md:flex-col lg:flex mt-20 ">
+                <Button type="  submit" className="bg-orange-400  text-color-black mt-14 p-5">
                   Search
                 </Button>
-                <Button onClick={resetForm} className="bg-indigo-400">
-                  Reset
-                </Button>
+               
               </div>
             </div>
           </form>
@@ -484,4 +451,4 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
   );
 };
 
-export default FilterPremiumCars1;
+export default FilterCars1;

@@ -11,19 +11,19 @@ const Testimonials = () => {
     },
     {
       id: 2,
-      name: "Ashish",
+      name: "Ashish Wadkar",
       role: "Customer",
   text: "Found my dream car at a great price. The process was smooth and transparent.",
     },
     {
       id: 3,
-      name: "Vinayak",
+      name: "Vinayak Sathe",
       role: "Customer",
   text: "Bought and sold cars here multiple times. Always a trustworthy experience!",
     },
     {
       id: 4,
-      name: "Pranav",
+      name: "Rutuja Patil",
       role: "Customer",
       text: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     },

@@ -72,7 +72,7 @@ const FeatureSection = () => {
   ];
 
   return (
-    <div className="w-full bg-[rgba(243,243,243,0.23)] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-[rgba(243,243,243,0.23)] mt-16 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#2A2A2A] mb-3 text-center sm:text-left">

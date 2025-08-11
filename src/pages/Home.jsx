@@ -7,10 +7,12 @@ import { StickyNavbar } from "../components/navbars/StickyNavbar";
 // import { useGetRecentCarQuery } from "../services/carAPI";
 import HomeSection from "../components/home/HomeSection";
 import AboutUs from "./AboutUs";
-import FeaturedCars from "./FeaturedCars";
+
 import StartSection from "../ui/StartSection";
 import SearchByBody from "../components/home/SearchByBody";
 import Testimonials from "../ui/Testimonials";
+import FeatureSection from "./FeaturedCars";
+import CarFilterForm from "./user/CarFilterForm ";
 
 const Home = () => {
   // const { data, error } = useFilterCarQuery();
@@ -21,19 +23,26 @@ const Home = () => {
   return (
     <div>
       <StickyNavbar />
-
-      <HomeSection />
-      <FeaturedCars />
-      
-      {/* <div className="mt-[4rem] md:mt-[1rem] flex justify-center"> */}
-        {/* <BrandList />
+  
+      {/* Section A & B wrapper */}
+      <div className="relative w-full">
+        {/* Component A: HomeSection */}
+        <HomeSection />
+  
+        {/* Component C: CarFilterForm */}
+        <div className="absolute top-[480px] left-1/2 transform -translate-x-1/2 z-50 w-full px-4 md:px-8">
+          <CarFilterForm/>
+        </div>
+        
+  
+        {/* Spacer to make room for the overlapping form */}
+        <div className="h-[200px]"></div>
+  
+        {/* Component B: FeaturedCars */}
+        <FeatureSection/>
       </div>
-      <div className="mt-2 md:my-5">
-        <FeaturedCars data={data} error={error} />
-      </div> */}
-      {/* <AccordionCustom /> */}
-      {/* <ContactUs/> */}
-
+  
+      {/* Other sections below */}
       <AboutUs />
       <StartSection />
       <SearchByBody />
@@ -41,6 +50,5 @@ const Home = () => {
       <Footer />
     </div>
   );
-};
-
+}
 export default Home;

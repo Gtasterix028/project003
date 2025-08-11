@@ -1,260 +1,55 @@
-// /* eslint-disable react/prop-types */
-// import { CardDefault } from "../../ui/CardDefault";
-// // import CardUi from "../../ui/CardUi";
-// import { useEffect, useState } from "react";
-
-// const GridCarList = ({ data, error,refetch ,isLoading , loadMoreRef }) => {
-//   const [posts, setPosts] = useState([]);
-
-//   useEffect(() => {
-//     if (data?.list && Array.isArray(data.list)) {
-//       console.log(data.list)
-//       setPosts(data.list);
-//     } else if (error) {
-//       // console.error("Data not Found");
-//     }
-//   }, [data, error]);
-
-//   return (
-//     <>
-//       <div className="grid grid-cols-1 gap-y-6 md:grid-cols-1 md:gap-y-6 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4 mb-5">
-//         {posts?.map((items, index) => {
-//           return (
-//             <div key={index}>
-//               <div className="flex">
-//                 <CardDefault data={items} Carid={items.carId} refetch={refetch} />
-//               </div>
-//             </div>
-//           );
-//         })}
-//         <div ref={loadMoreRef} style={{ height: '100px', background: 'transparent' }}>
-//         {/* This is the sentinel for triggering infinite scroll */}
-//         {isLoading && <p>Loading more cars...</p>}
-//       </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default GridCarList;
-
-
-// import { CardDefault } from "../../ui/CardDefault";
-// import { useEffect, useState } from "react";
-
-// const GridCarList = ({ data, error, refetch, isLoading, onLoadMore }) => {
-//   const [posts, setPosts] = useState([]);
-
-//   useEffect(() => {
-//     if (data?.list && Array.isArray(data.list)) {
-//       setPosts((prevPosts) => [...prevPosts, ...data.list]);
-//     }
-//   }, [data]);
-
-//   const renderContent = () => {
-//     if (error) {
-//       return (
-//         <p className="text-center text-red-500 font-bold">
-//           Something went wrong. Please try again later.
-//         </p>
-//       );
-//     }
-
-//     if (!posts.length && !isLoading) {
-//       return (
-//         <p className="text-center text-gray-500 font-bold">
-//           No cars available to display.
-//         </p>
-//       );
-//     }
-
-//     return (
-//       <>
-//         <div className="grid grid-cols-1 gap-y-6 md:grid-cols-1 md:gap-y-6 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4 mb-5">
-//           {posts.map((items) => (
-//             <div key={items.carId}>
-//               <div className="flex">
-//                 <CardDefault data={items} Carid={items.carId} refetch={refetch} />
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//         <div className="flex justify-center mt-4">
-//           <button
-//             onClick={onLoadMore}
-//             className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-//             disabled={isLoading}
-//           >
-//             {isLoading ? "Loading..." : "Load More"}
-//           </button>
-//         </div>
-//       </>
-//     );
-//   };
-
-//   return <>{renderContent()}</>;
-// };
-
-// export default GridCarList;
-
-
-// import { CardDefault } from "../../ui/CardDefault";
-// import { useEffect, useState } from "react";
-// import PropTypes from "prop-types"; // Import PropTypes
-
-// const GridCarList = ({ data, error, refetch, isLoading, onLoadMore }) => {
-//   const [posts, setPosts] = useState([]);
-
-//   useEffect(() => {
-//     if (data?.list && Array.isArray(data.list)) {
-//       setPosts((prevPosts) => [...prevPosts, ...data.list]);
-//     }
-//   }, [data]);
-
-//   console.log("Posts in GridCarList component:", posts);
-
-//   const renderContent = () => {
-//     if (error) {
-//       return (
-//         <p className="text-center text-red-500 font-bold">
-//           Something went wrong. Please try again later.
-//         </p>
-//       );
-//     }
-
-//     if (!posts.length && !isLoading) {
-//       return (
-//         <p className="text-center text-gray-500 font-bold">
-//           No cars available to display.
-//         </p>
-//       );
-//     }
-
-//     return (
-//       <>
-//         <div className="grid grid-cols-1 gap-y-6 md:grid-cols-1 md:gap-y-6 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4 mb-5">
-//           {posts.map((items) => (
-//             <div key={items.carId}>
-//               <div className="flex">
-//                 <CardDefault data={items} Carid={items.carId} refetch={refetch} />
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//         <div className="flex justify-center mt-4">
-//           <button
-//             onClick={onLoadMore}
-//             className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-//             disabled={isLoading}
-//           >
-//             {isLoading ? "Loading..." : "Load More"}
-//           </button>
-//         </div>
-//       </>
-//     );
-//   };
-
-//   return <>{renderContent()}</>;
-// };
-
-
-// // Add PropTypes validation
-// GridCarList.propTypes = {
-//   data: PropTypes.shape({
-//     list: PropTypes.array.isRequired,
-//   }).isRequired,
-//   error: PropTypes.object,
-//   refetch: PropTypes.func.isRequired,
-//   isLoading: PropTypes.bool.isRequired,
-//   onLoadMore: PropTypes.func.isRequired,
-// };
-
-// export default GridCarList;
-
-
-
-
 import { CardDefault } from "../../ui/CardDefault";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types"; // Import PropTypes
-import { FiLoader } from "react-icons/fi"; // Spinner icon
 
-const GridCarList = ({ data, error, refetch, isLoading,isFetching, pageNO }) => {
+const GridCarList = ({ data, error, refetch, isLoading }) => {
   const [posts, setPosts] = useState([]);
-
-
 
   useEffect(() => {
     if (data?.list && Array.isArray(data.list)) {
-            console.log("Appending cars in GridCarList component:", data.list);
-console.log("pageNo............."+pageNO)
-      setPosts((prevPosts) => {
-
-        if (pageNO === 1) {
-          return data.list; // Replace with fresh data
-        }
-  
-        // Merge only unique car data (avoid duplicates)
-        const newPosts = data.list.filter(
-          (car) => !prevPosts.some((prevCar) => prevCar.carId === car.carId)
-        );
-        return [...prevPosts, ...newPosts];
-      });
+      console.log("Setting cars in GridCarList component:", data.list);
+      setPosts(data.list);
     }
-  }, [data,pageNO]);
-
-  // useEffect(() => {
-  //   if (data?.list && Array.isArray(data.list)) {
-  //     // Append new data with a slight delay
-  //     setTimeout(() => {
-  //       setPosts((prevPosts) => {
-  //         const newPosts = data.list.filter(
-  //           (car) => !prevPosts.some((prevCar) => prevCar.carId === car.carId)
-  //         );
-  //         return [...prevPosts, ...newPosts];
-  //       });
-  //     }, 500); // Delay to simulate smooth transition
-  //   }
-  // }, [data]);
-  
+  }, [data]);
 
   const renderContent = () => {
-    if (error) {
+    if (isLoading) {
       return (
-        <p className="text-center text-red-500 font-bold">
-          Something went wrong. Please try again later.
-        </p>
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        </div>
       );
     }
 
-    if (!posts.length && !isLoading) {
+    if (error) {
       return (
-        <p className="text-center text-gray-500 font-bold">
-          No cars available to display.
-        </p>
+        <div className="text-center py-8">
+          <p className="text-red-500 font-bold mb-2">Something went wrong. Please try again later.</p>
+          <button 
+            onClick={() => refetch()} 
+            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+
+    if (!posts.length) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-500 font-bold mb-2">No cars available to display.</p>
+          <p className="text-gray-400 text-sm">Try adjusting your filters or check back later.</p>
+        </div>
       );
     }
 
     return (
-      <>
-        <div className="grid grid-cols-1 gap-y-6 md:grid-cols-1 md:gap-y-6 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4 mb-5">
-          {posts.map((items) => (
-            <div key={items.carId}>
-              <div className="flex">
-                <CardDefault data={items} Carid={items.carId} refetch={refetch} isLoading={isLoading}/>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center mt-4">
-          {/* Spinner when loading */}
-          {isFetching ? (
-            <FiLoader className="animate-spin text-blue-500 h-8 w-8" />
-          ) : (
-            null
-          )}
-        </div>
-      </>
+      <div className="flex flex-col gap-4 mb-5">
+        {posts.map((items) => (
+          <CardDefault key={items.carId} data={items} Carid={items.carId} refetch={refetch} isLoading={isLoading}/>
+        ))}
+      </div>
     );
   };
 
@@ -269,10 +64,6 @@ GridCarList.propTypes = {
   error: PropTypes.object,
   refetch: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  isFetching: PropTypes.bool.isRequired,
-  onLoadMore: PropTypes.func.isRequired,
-  pageNO: PropTypes.func.isRequired,
-
 };
 
 export default GridCarList;

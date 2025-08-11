@@ -5,7 +5,7 @@ import { apiSlice } from "./apiSlice";
 export const carApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     filterCar: builder.query({
-      query: ({ urlState = {}, pageNO = 2 }) => {
+      query: ({ urlState = {}, pageNO = 1 }) => {
         // Destructure and provide default values
         const {
           MinPrice = "",
@@ -17,7 +17,7 @@ export const carApi = apiSlice.injectEndpoints({
           Transmission = "",
           FuleType = "",
         } = urlState || {};
-        console.log(`API called with page: ${pageNO}`);
+        console.log(`API called with page: ${pageNO} and filters:`, urlState);
 
         return {
           url: `/cars/mainFilterPage?minPrice=${MinPrice}&maxPrice=${MaxPrice}&area=${Area}&year=${Year}&brand=${Brand}&model=${Model}&transmission=${Transmission}&fuelType=${FuleType}&pageNo=${pageNO}`,
@@ -274,6 +274,14 @@ export const carApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["Admin"],
     }),
+ 
+    getCarImage: builder.query({
+      query: ({ carId, docType }) =>
+        `/uploadFile/getCarIdType?carId=${carId}&docType=${docType}`,
+      responseHandler: (response) => response.blob(), // because it's an image
+    }),
+
+
     CarStatusActive: builder.query({
       query: () => ({
         url: `/BeadingCarController/getByStatus/active`,
@@ -302,6 +310,7 @@ export const {
   useGetAllUserConfirmQuery,
   useGetPendingrequestQuery,
   useGetCarImageByIdQuery,
+   useGetCarImageQuery,
   useConfirmBookingMutation,
   useDeleteCarImageByIdMutation,
   useFavoriteCarMutation,

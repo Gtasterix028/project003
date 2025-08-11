@@ -9,7 +9,7 @@ const GridPremiumCarList1 = ({ data, error, refetch }) => {
 
   useEffect(() => {
     if (data?.list && Array.isArray(data.list)) {
-      setPosts(data.list);
+      setPosts(data.list);  
     } else if (error) {
       // console.error("Data not Found");
     }

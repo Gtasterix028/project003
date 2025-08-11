@@ -28,11 +28,10 @@ import logo from "../../assets/logo1.png";
 import logo2 from "../../assets/ui/ucdap.png"
 import logo3 from "../../assets/ui/UCDAP_white.png"
 import underline from "../../assets/Home_undrline.png";
-
-
 import { jwtDecode } from "jwt-decode";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";  
 import cartechlogo2 from "/cars/cartechlogo2.png";
+
 ///////////////
 export function StickyNavbar() {
   const location = useLocation();
@@ -69,7 +68,7 @@ useEffect(() => {
   const path = location.pathname;
   if (path === "/") {
     setActiveTab("Home");
-  } else if (path === "/premiumcarlist") {
+  } else if (path === "/PremiumCarPage") {
     setActiveTab("Premium Cars");
   } else if (path === "/carlist") {
     setActiveTab("Buy Car");
@@ -289,12 +288,12 @@ useEffect(() => {
         </Typography>
       </Link>
 
-      <Link to={"/premiumcarlist"}>
+      <Link to={"/PremiumCarPage"}>
         <Typography
           as="li"
           variant="small"
           color="white"
-          className={`p-3 rounded-md font-normal ${window.location.pathname === "/premiumcarlist"
+          className={`p-3 rounded-md font-normal ${window.location.pathname === "/PremiumCarPage"
               ? "bg-[#5e67c7] text-white"
               : ""
             } hover:bg-indigo-400 `}
@@ -328,7 +327,7 @@ useEffect(() => {
 
   return (
     <div
-      className={`w-full lg:h-[16vh] fixed top-0 left-0 z-50 transition-transform duration-300 ${
+      className={`w-full lg:h-[14vh] fixed top-0 left-0 z-50 transition-transform duration-300 ${
         isHomePage
           ? scrolled
             ? "bg-black/90 backdrop-blur-md"
@@ -356,9 +355,9 @@ useEffect(() => {
         <div className="hidden sm:flex items-center gap-6 lg:gap-10 text-white">
           {[
             { label: "Home", path: "/" }, 
-            { label: "Premium Cars", path: "/premiumcarlist" }, 
+            { label: "Premium Cars", path: "/PremiumCarPage" }, 
             { label: "Buy Car", path: "/carlist" }
-          ].map(({ label, path }) => {
+          ].map(({ label, path }) => {  
             const isActive = activeTab === label;
             return (
               <div
@@ -451,7 +450,7 @@ useEffect(() => {
           <Link to="/" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
             Home
           </Link>
-          <Link to="/premiumcarlist" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
+          <Link to="/PremiumCarPage" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
             Premium Cars
           </Link>
           <Link to="/carlist" onClick={() => setOpenNav(false)} className="hover:text-gray-300">

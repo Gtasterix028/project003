@@ -14,6 +14,7 @@ import {
   useCarremoveFavoriteMutation,
   useCarFavoriteAddRemoveQuery,
 } from "../services/carAPI";
+import { useGetDealerQuery } from "../services/dealerAPI";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
@@ -85,6 +86,12 @@ export function CardDefault({ data, Carid, refetch,isLoading }) {
     refetch: refetchFavCarData,
   } = useCarFavoriteAddRemoveQuery({ carid, useid });
 
+  // Fetch dealer information if dealerId is available
+  const { data: dealerData, isLoading: dealerLoading } = useGetDealerQuery(
+    { id: data.dealerId },
+    { skip: !data.dealerId }
+  );
+
   const [CarremoveFavorite] = useCarremoveFavoriteMutation();
 
   const handleFavoriteToggle = async () => {
@@ -105,112 +112,103 @@ export function CardDefault({ data, Carid, refetch,isLoading }) {
     }
   };
 
-  const combinedText = `${data.year} ${data.brand} ${data.model}`;
+  // Seller info from API data - simplified to show only basic info
+  const seller = {
+    name: dealerData?.dealerName || data.dealerName || data.sellerName || "Seller",
+    ownership: data.ownerType || data.ownership || "First Owner", // Ownership status
+    profileImg: dealerData?.profileImage || data.dealerProfileImage || data.sellerImg || "/public/logos/dummy-profile-pic.jpg",
+  };
+
+  const combinedText = `${data.year || ''} ${data.brand || ''} ${data.model || ''}`;
   const truncatedText =
     combinedText.length > 25
       ? combinedText.substring(0, 22) + "..."
       : combinedText;
+
+  // Format price with proper currency
+  const formatPrice = (price) => {
+    if (!price) return "Price not available";
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  // Format kilometers
+  const formatKm = (km) => {
+    if (!km) return "KM not available";
+    return `${km.toLocaleString()} Kms`;
+  };
+
   return (
-    <div className="flex justify-center mx-auto">
-
-{isLoading || !data ? (
-    // Skeleton Card when data is loading
-    <div className="max-w-[12rem] md:max-w-[15rem] lg:max-w-[17rem] max-h-[28rem] md:max-h-[25rem] lg:max-h-[28rem] overflow-hidden p-4 border border-gray-300 rounded-lg shadow-lg animate-pulse">
-      {/* Skeleton Image */}
-      <div className="h-32 bg-gray-200 rounded-lg mb-4"></div>
-      {/* Skeleton Title */}
-      <div className="h-4 bg-gray-200 rounded-lg mb-2"></div>
-      {/* Skeleton Subtext */}
-      <div className="h-4 bg-gray-200 rounded-lg mb-4"></div>
-      {/* Skeleton Text */}
-      <div className="h-6 bg-gray-200 rounded-lg mb-2"></div>
-    </div>  ) : (
-      <Card className=" max-w-[12rem] md:max-w-[15rem] lg:max-w-[17rem] max-h-[28rem] md:max-h-[25rem] lg:max-h-[28rem] overflow-hidden hover:border hover:border-5 hover:shadow-2xl  hover:border-indigo-700 border">
-        <CardHeader
-          floated={false}
-          shadow={false}
-          color="transparent"
-          className="m-0 rounded-none"
-        >
-          <Link to={`/carlist/cardetails/${data.carId}`}>
-            <CarouselCustomArrows carId={data.carId} />
-          </Link>
-        </CardHeader>
-        <CardBody>
-            {userRole === "USER" ? (
-              <div className="flex justify-end">
-                <div onClick={handleFavoriteToggle} className="cursor-pointer">
-                  <div className="-mb-6">
-                    {favoriteCars?.some(
-                      (favCar) => favCar.carId === data.carId
-                    ) ? (
-                      <RatedIcon />
-                    ) : (
-                      <UnratedIcon />
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : null}
-            {/* <Typography>{data.year}</Typography> */}
-              <Typography
-                variant="h5"
-                color="blue-gray"
-                className="mb-2  text-base md:text-lg lg:text-xl"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                {isHovered ? data.year+" "+data.brand + " " + data.model : truncatedText}
-                {/* {`${data.brand} ${data.model}`.length > 25 ? `${data.brand} ${data.model}`.substring(0, 22) + '...' : `${data.brand} ${data.model}`} */}
-              </Typography>
-
-           
-
-
-              <p className=" sm:text-[0.400rem] md:text-[0.580rem] lg:text-[0.666rem] font-medium uppercase flex space-x-0 flex-wrap">
-              <span className="flex items-center p-[1px] rounded-sm text-black font-[sourceSans] ">
-    <DriveEtaIcon className=" text-[0.9rem] sm:text-[0.5rem] md:text-[0.7rem] lg:text-[0.8rem] transform scale-[0.6] sm:scale-[0.9] md:scale-[0.7] lg:scale-[0.9]"  style={{ color: "#6EC207"  }}/> {/* KM Driven Icon */}
-    {data.kmDriven} KM
-  </span>
-  <span className="flex items-center p-[1px] rounded-sm text-black font-[sourceSans]">
-    <LocalGasStationIcon className=" text-[0.9rem] sm:text-[0.5rem] md:text-[0.7rem] lg:text-[0.8rem] transform scale-[0.6] sm:scale-[0.9] md:scale-[0.7] lg:scale-[0.9]h-2 w-2 sm:h-1 sm:w-1 md:h-2 md:w-2 lg:h-3 lg:w-3" style={{ color: "#6EC207" }} /> {/* Fuel Type Icon */}
-    {data.fuelType}
-  </span>
-  <span className="flex items-center p-[1px] rounded-sm text-black font-[sourceSans]">
-    <TransmissionIcon className="text-[0.9rem] sm:text-[0.5rem] md:text-[0.7rem] lg:text-[0.8rem] transform scale-[0.6] sm:scale-[0.9] md:scale-[0.7] lg:scale-[0.9]" style={{ color: "#6EC207"  }} /> {/* Transmission Icon */}
-    {data.transmission}
-  </span>
-</p>
-            <Typography variant="h6" className="font-bold text-blue-gray-900  text-lg md:text-xl ">
-              ₹ {data.price}
-            </Typography>
-            {/* <Link to={`/carlist/cardetails/${data.carId}`}>
-            <button className="mt-2 mb-4 p-[7px] bg-indigo-500 rounded-lg      text-white">
-              View Car
-            </button>
-          </Link> */}
-           <Link to={`/carlist/cardetails/${data.carId}`}>
-          {" "}
-          <Typography  variant="h6"  className="mb-2 mt-2  text-sm md:text-base"  style={{ display: 'flex', alignItems: 'center', color: "green" }}>
-            View Car Details  <FaArrowRight style={{ color: 'green', fontSize: '15px' }} />
-          </Typography>
-          </Link>
-            <hr />
-
-              <div className="flex align-bottom items-baseline gap-3    text-sm md:text-base text-gray-700 ">
-              {/* <Typography variant="h10" color="blue-gray" className="mb-2">
-              <CheckCircle style={{ color: 'green' }}/>  {data.title}
-            </Typography> */}
-            <FaLocationDot  style={{ color: '#000' }} />
-            <div className="  text-base text-gray-700 font-[sourceSans]">
-             {data.area},{data.city}
-            </div>
+    <div className="w-full bg-white rounded-xl shadow flex flex-row items-center p-4 mb-4 max-w-4xl mx-auto border border-gray-200 hover:shadow-lg transition-all">
+      {/* Car Image */}
+      <div className="flex-shrink-0 w-64 h-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+        <Link to={`/carlist/cardetails/${data.carId}`}>
+          <img
+            src={data.images && data.images.length > 0 ? data.images[0] : data.carImage || '/public/cars/no-image-available.png'}
+            alt={combinedText}
+            className="object-cover w-full h-full"
+            onError={(e) => {
+              e.target.src = '/public/cars/no-image-available.png';
+            }}
+          />
+        </Link>
+      </div>
+      {/* Car Info */}
+      <div className="flex-1 px-6 flex flex-col justify-between h-full min-w-0">
+        <div className="flex items-center mb-1">
+          <span className="text-xs text-orange-500 font-semibold mr-2">{data.bodyType || 'Sedan'}</span>
+        </div>
+        <div className="font-semibold text-lg text-gray-900 truncate">{combinedText}</div>
+        <div className="flex items-center text-gray-500 text-sm mt-1 mb-2 space-x-4">
+          <span className="flex items-center">
+            <DriveEtaIcon className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
+            {formatKm(data.kmDriven)}
+          </span>
+          <span className="flex items-center">
+            <LocalGasStationIcon className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
+            {data.fuelType || 'N/A'}
+          </span>
+          <span className="flex items-center">
+            <TransmissionIcon className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
+            {data.transmission || 'N/A'}
+          </span>
+          <span className="flex items-center">
+            <FaLocationDot className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
+            {data.area || data.location || 'N/A'}
+          </span>
+        </div>
+        <div className="text-orange-600 font-bold text-xl mb-2">{formatPrice(data.price)}</div>
+        <Link to={`/carlist/cardetails/${data.carId}`}>
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition flex items-center text-sm font-semibold">View Details <FaArrowRight className="ml-2" /></button>
+        </Link>
+      </div>
+      {/* Seller Info - Simplified */}
+      <div className="flex flex-col items-center justify-center w-32 border-l pl-4 min-h-[100px]">
+        {dealerLoading ? (
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 rounded-full bg-gray-200 animate-pulse mb-2"></div>
+            <div className="h-3 bg-gray-200 rounded w-16 animate-pulse mb-1"></div>
+            <div className="h-3 bg-gray-200 rounded w-12 animate-pulse"></div>
           </div>
-            {/* <p className="text-sm text-purple-500 font-[sourceSans]">Free Test Drive Today at {data.area}</p> */}
-         
-        </CardBody>
-      </Card>
-      )}
+        ) : (
+          <>
+            <img 
+              src={seller.profileImg} 
+              alt={seller.name || "Seller"} 
+              className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 mb-2"
+              onError={(e) => {
+                e.target.src = "/public/logos/dummy-profile-pic.jpg";
+              }}
+            />
+            <div className="text-gray-900 font-semibold text-xs text-center truncate w-full mb-1">{seller.name}</div>
+            <div className="text-gray-500 text-xs text-center">{seller.ownership}</div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
