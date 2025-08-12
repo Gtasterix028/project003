@@ -22,7 +22,7 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
 
   const [selectedBrand, setSelectedBrand] = useState("");
   const [modelOptions, setModelOptions] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const [value, setValue] = useState([1500000, 100000000]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -251,81 +251,17 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
   };
 
   return (
-    <div className="border-2 shadow-lg rounded-lg m-2">
-      <div className="flex justify-between">
-        <div className="-mt-10 text-black text-3xl font-[sourceSans] font-bold flex hover:rounded-2xl hover:shadow-2xl">
-          Premium Cars
-        </div>
-        <div>
-          <button
-            type="button"
-            className="-mt-10 text-black text-lg font-bold font-[sourceSans] flex hover:rounded-2xl hover:shadow-2xl "
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <span className="mt-[6px] mr-1">
-              <FaFilter />
-            </span>
-            Filter
-          </button>
-        </div>
-      </div>
-
-      <Card className={`p-4 ${showFilters ? "block" : "hidden bg-gray-100"}`}>
+    
+    <div className="  shadow-lg rounded-lg ">
+             <Card className={`p-4 ${showFilters ? "block" : "hidden bg-gray-100"}`}>
         <div className="space-y-4">
           <form onSubmit={submitHandle}>
             <div>
-              <p className="font-bold mb-5 text-xl text-indigo-400">Filters</p>
+              <p className="font-bold mb-5 text-xl text-orange-400">Filters</p>
             </div>
-            <div className="md:mb-1 md:grid md:grid-cols-5 md:gap-6 md:items-center">
-              <div>
-                <Typography
-                  variant="h6"
-                  color="blue-gray"
-                  className=" font-bold text-black font-[sourceSans] text-lg"
-                >
-                  Price Range
-                </Typography>
-
-                <div className="flex justify-center items-center">
-                  <div style={{ width: "300px" }}></div>
-                </div>
-                <div className="flex flex-col gap-3 justify-between">
-                  <div className="flex justify-between">
-                    <div className="flex">
-                      <span className="text-black p-2 font-[sourceSans]">
-                        ₹{formattedAmountMin}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <span className="text-black p-2 font-[sourceSans]">
-                        ₹{formattedAmountMax}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex items-center justify-center">
-                  <div className="flex text-center font-bold font-[sourceSans] text-black">
-                    ₹15L
-                  </div>
-                  <div className="w-full flex items-center px-2 mx-1">
-                    <Slider
-                      className="w-full"
-                      color="black"
-                      value={value}
-                      onChange={handleSliderChange}
-                      valueLabelDisplay="auto"
-                      min={1500000}
-                      max={100000000}
-                      step={calculateStep(value[1])}
-                      disableSwap
-                    />
-                  </div>
-                  <div className="flex text-center font-bold font-[sourceSans] text-black">
-                    ₹10Cr
-                  </div>
-                </div>
-              </div>
-              <div>
+            <div className="md:mb-1 md:grid md:grid-cols-5 md:gap-6  md:items-center">
+              
+              <div className="items-center justify-center">
                 <Autocomplete
                   id="area-autocomplete"
                   className="my-1"
@@ -469,10 +405,10 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
                 />
               </div>
               <div className="flex gap-5 md:flex-col lg:flex">
-                <Button type="submit" className="bg-indigo-400">
+                <Button type="submit" className="bg-orange-400">
                   Search
                 </Button>
-                <Button onClick={resetForm} className="bg-indigo-400">
+                <Button onClick={resetForm} className="bg-orange-400">
                   Reset
                 </Button>
               </div>
@@ -481,6 +417,7 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
         </div>
       </Card>
     </div>
+    
   );
 };
 

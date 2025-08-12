@@ -1,23 +1,19 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Typography,
-} from "@material-tailwind/react";
-import { CarouselCustomArrows } from "./CarouselCustomArrows";
+
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { FaRoad, FaGasPump, FaCogs } from "react-icons/fa";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useFavoriteCarMutation,
   useCarremoveFavoriteMutation,
   useCarFavoriteAddRemoveQuery,
 } from "../services/carAPI";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
-import { useDispatch, useSelector } from "react-redux";
 import { addFavoriteCar, removeFavoriteCar } from "../pages/favoritesSlice";
+import { CarouselCustomArrows } from "./CarouselCustomArrows";
 
 function RatedIcon() {
   return (
@@ -54,47 +50,34 @@ function UnratedIcon() {
 export function PremiumCardDefault1({ data, Carid, refetch }) {
   const dispatch = useDispatch();
   const favoriteCars = useSelector((state) => state.favorites.favoriteCars);
-  const [isHovered, setIsHovered] = useState(false);
-
   const [favoriteCar] = useFavoriteCarMutation();
+  const [CarremoveFavorite] = useCarremoveFavoriteMutation();
+
   const token = Cookies.get("token");
   let jwtDecodes;
-
   if (token) {
     jwtDecodes = jwtDecode(token);
   }
   const UserId = jwtDecodes?.userId;
   const userRole = token ? jwtDecodes?.authorities[0] : null;
-  const data2 = {
-    carId: Carid,
-    userId: UserId,
-  };
-  const carid = data2.carId;
-  const useid = data2.userId;
 
-  const {
-    data: favData,
-    error,
-    refetch: refetchFavCarData,
-  } = useCarFavoriteAddRemoveQuery({ carid, useid });
+  const carid = Carid;
+  const useid = UserId;
 
-  const [CarremoveFavorite] = useCarremoveFavoriteMutation();
+  const { data: favData, refetch: refetchFavCarData } =
+    useCarFavoriteAddRemoveQuery({ carid, useid });
 
   const handleFavoriteToggle = async () => {
-    const data2 = {
-      carId: Carid,
-      userId: UserId,
-    };
+    const data2 = { carId: Carid, userId: UserId };
     if (favoriteCars?.find((favCar) => favCar.carId === data.carId)) {
       dispatch(removeFavoriteCar(data));
-      const res = await CarremoveFavorite({
+      await CarremoveFavorite({
         saveCarId: favData?.object?.saveCarId,
       });
       refetchFavCarData();
     } else {
-      const res = await favoriteCar(data2);
+      await favoriteCar(data2);
       dispatch(addFavoriteCar(data2));
-      // refetchFavCarData()
     }
   };
 
@@ -103,86 +86,79 @@ export function PremiumCardDefault1({ data, Carid, refetch }) {
     combinedText.length > 25
       ? combinedText.substring(0, 22) + "..."
       : combinedText;
-  return (
-    <div className="flex justify-center mx-auto">
-      <Card className="w-[20rem] mt-5 hover:border hover:border-3 border border-blue-400 shadow-md shadow-black">
-        <CardHeader className="h-full">
-          <Link to={`/carlist/cardetails/premium/${data.carId}`}>
-            <CarouselCustomArrows carId={data.carId} />
-          </Link>
-        </CardHeader>
-        <CardBody>
-            {userRole === "USER" ? (
-              <div className="flex justify-end">
-                <div onClick={handleFavoriteToggle} className="cursor-pointer">
-                  <div className="-mb-6">
-                    {favoriteCars?.some(
-                      (favCar) => favCar.carId === data.carId
-                    ) ? (
-                      <RatedIcon />
-                    ) : (
-                      <UnratedIcon />
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : null}
 
-            <div className="p-2">
-              <h3 className="text-xl font-[sourceSans] font-bold text-black">
-                ₹ {data.price}
-              </h3>
-              <Typography
-                variant="h5"
-                color="blue-gray"
-                className="mb-2 text-xl text-black uppercase"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                {isHovered ? data.brand + " " + data.model : truncatedText}
-                {/* {`${data.brand} ${data.model}`.length > 25 ? `${data.brand} ${data.model}`.substring(0, 22) + '...' : `${data.brand} ${data.model}`} */}
-              </Typography>
-              <div className="grid grid-cols-2 gap-2 mt-8">
-                <div>
-                  <p className="text-xs font-semibold text-gray-500">
-                    REG. YEAR
-                  </p>
-                  <p className="text-sm font-semibold text-black font-[sourceSans]">
-                    {data.year}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-500">KMS</p>
-                  <p className="text-sm font-semibold text-black font-[sourceSans]">
-                    {data.kmDriven}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-500">
-                    FUEL TYPE
-                  </p>
-                  <p className="text-sm font-semibold text-black font-[sourceSans] uppercase">
-                    {data.fuelType}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-500">
-                    REG. STATE
-                  </p>
-                  <p className="text-sm font-semibold text-black font-[sourceSans] uppercase">
-                    {data.city}
-                  </p>
-                </div>
-              </div>
+  return (
+    <div className="max-w-xs bg-white rounded-2xl overflow-hidden shadow-md">
+      {/* Car Image */}
+      <Link to={`/carlist/cardetails/premium/${data.carId}`}>
+        <div className="relative">
+          <CarouselCustomArrows carId={data.carId} />
+          {userRole === "USER" && (
+            <div
+              onClick={handleFavoriteToggle}
+              className="absolute top-2 right-2 cursor-pointer bg-white rounded-full p-1 shadow"
+            >
+              {favoriteCars?.some(
+                (favCar) => favCar.carId === data.carId
+              ) ? (
+                <RatedIcon />
+              ) : (
+                <UnratedIcon />
+              )}
             </div>
-            {/* <Link to={`/carlist/cardetails/${data.carId}`}>
-            <button className="mt-2 mb-4 p-[7px] bg-indigo-500 rounded-lg      text-white">
+          )}
+        </div>
+      </Link>
+
+      {/* Content */}
+      <div className="p-4">
+        {/* Car Type */}
+        <span className="text-yellow-500 text-sm font-semibold">
+          {data.bodyType || "Sedan"}
+        </span>
+
+        {/* Car Title */}
+        <h3 className="text-lg font-bold mt-1">
+          {truncatedText}
+        </h3>
+
+        {/* Car Details */}
+        <div className="flex items-center text-gray-500 text-sm mt-2 gap-4 flex-wrap">
+          <div className="flex items-center gap-1">
+            <FaRoad className="text-gray-400" /> {data.kmDriven} Kms
+          </div>
+          <div className="flex items-center gap-1">
+            <FaGasPump className="text-gray-400" /> {data.fuelType}
+          </div>
+          <div className="flex items-center gap-1">
+            <FaCogs className="text-gray-400" /> {data.transmission}
+          </div>
+        </div>
+
+        {/* Price */}
+        <p className="text-yellow-500 font-semibold text-lg mt-3">
+          ₹ {data.price}
+        </p>
+
+        {/* Seller Info & Button */}
+        <div className="mt-4 flex items-center justify-between border-t pt-3">
+          <div className="flex items-center gap-2">
+            <img
+              src={data.sellerImage || "https://via.placeholder.com/40"}
+              alt="Seller"
+              className="w-8 h-8 rounded-full"
+            />
+            <span className="text-sm font-medium">
+              {data.sellerName || "Unknown Seller"}
+            </span>
+          </div>
+          <Link to={`/carlist/cardetails/premium/${data.carId}`}>
+            <button className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-1 rounded-lg text-sm font-medium">
               View Car
             </button>
-          </Link> */}
-         
-        </CardBody>
-      </Card>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

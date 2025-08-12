@@ -89,7 +89,7 @@ import InspectorEdit from "./pages/Inspector/InspectorEdit";
 import SalerEdit from "./pages/sales/SalerEdit";
 //PremiumCars
 // import PremiumCarList from "./components/PremiumCar/PremiumCarPage";
-import PremiumCarPage from "./components/PremiumCar/PremiumCarPage";
+import PremiumCarList from "./components/Premium/PremiumCarList";
 import CarImageCarousel from "./components/Premium/CarImageCarousel";
 import ForgetPassword from "./forms/ForgetPassword";
 import ResetPassword from "./forms/ResetPassword";
@@ -129,7 +129,7 @@ export default function App() {
           <Route path="signin" element={<LoginCard />} />
           <Route path="/changePassword" element={<ChangePassword />} />
           <Route path="/carlist" element={<BuyCar/>} />
-          <Route path="/premiumcarpage" element={<PremiumCarPage />} />
+          <Route path="/premiumCarList" element={<PremiumCarList />} />  
           <Route path="/carimagecarousel" element={<CarImageCarousel />} />
           <Route path="/carlistadmin" element={<AdminCarList />} />
           <Route path="/adminB2B" element={<AdminB2BList />} />

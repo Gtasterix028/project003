@@ -113,12 +113,15 @@ import { useNavigate,useLocation  } from "react-router-dom";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
+import { FiFilter } from "react-icons/fi";
+// import { Filter } from "@material-ui/icons";
 
 // import { fetchFavoriteCars } from "./favoritesSlice";
 
 // import { FiLoader } from 'react-icons/fi';
 
 const BuyCar = () => {
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
     const location = useLocation();
     const { filterCar } = location.state ?? {};
   const dispatch = useDispatch();
@@ -313,10 +316,35 @@ const BuyCar = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 lg:gap-6">
-          {/* Filter sidebar on the left (hidden on mobile) */}
-          <div className="hidden md:block md:col-span-2 lg:col-span-1 w-75 h-full">
-            <div className="sticky flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 lg:gap-6    ">
+          
+      {/* Mobile filter button */}
+      <div className="block md:hidden mb-4">
+        <div className="flex justify-end">
+        <button
+          onClick={() => setShowMobileFilter((prev) => !prev)}
+          className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600"
+        >
+          <FiFilter className="text-lg " />
+          Filters
+        </button>
+        </div>
+
+        {/* Mobile filter dropdown */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            showMobileFilter ? "max-h-[1000px] mt-3" : "max-h-0"
+          }`}
+        >
+          <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+            <FilterCars setUrlState={setUrlState} onFilterChange={refetch} />
+          </div>
+        </div>
+      </div>
+        
+
+          <div className="hidden md:block md:col-span-2 lg:col-span-1 w-75 h-full   ">
+            <div className="sticky top-0 flex flex-col">
               <FilterCars setUrlState={setUrlState} onFilterChange={refetch} />
             </div>
           </div>
@@ -347,6 +375,9 @@ const BuyCar = () => {
               <GridCarList data={{...data, list: sortedCars}} error={error} refetch={refetch} isLoading={isLoading} />
             )}
           </div>
+ 
+
+
         </div>
 
         {/* Pagination Controls */}

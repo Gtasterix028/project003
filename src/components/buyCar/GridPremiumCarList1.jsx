@@ -15,24 +15,21 @@ const GridPremiumCarList1 = ({ data, error, refetch }) => {
     }
   }, [data, error]);
 
+  
   return (
-    <>
-      <div className="grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-10 md:gap-y-6 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4 hover:">
-        {posts?.map((items, index) => {
-          return (
-            <div key={index}>
-              <div className="flex">
-                <PremiumCardDefault1
-                  data={items}
-                  Carid={items.carId}
-                  refetch={refetch}
-                />
-              </div>
-            </div>
-          );
-        })}
+    <div className="bg-black p-2">
+      <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+        {posts?.map((items, index) => (
+          <div key={index} className="flex">
+            <PremiumCardDefault1
+              data={items}
+              Carid={items.carId}
+              refetch={refetch}
+            />
+          </div>
+        ))}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -289,6 +289,7 @@ const FilterCars = ({ setUrlState }) => {
             />
             <Autocomplete
               id="body-autocomplete"
+              className="hidden"
               freeSolo
               options={[]} // TODO: Add body options if available
               getOptionLabel={(option) => option}
@@ -310,7 +311,7 @@ const FilterCars = ({ setUrlState }) => {
             {/* Price Slider */}
             <div>
               <div className="flex justify-between text-xs font-medium mb-0">
-                <span>Price: ${formattedAmountMin}&nbsp;-&nbsp;${formattedAmountMax}</span>
+                <span>Price: ₹{formattedAmountMin}&nbsp;-&nbsp;₹{formattedAmountMax}</span>
               </div>
               <Slider
                 className="w-full"
@@ -333,7 +334,7 @@ const FilterCars = ({ setUrlState }) => {
               />
             </div>
             {/* Year Slider */}
-            <div>
+            <div className="hidden">
               <div className="flex justify-between text-xs font-medium mb-0">
                 <span>Year: {yearValue[0]}&nbsp;-&nbsp;{yearValue[1]}</span>
               </div>
@@ -358,8 +359,8 @@ const FilterCars = ({ setUrlState }) => {
               />
             </div>
             {/* KM Slider */}
-            <div>
-              <div className="flex justify-between text-xs font-medium mb-1">
+            <div className="hidden">
+              <div className=" flex justify-between text-xs font-medium mb-1">
                 <span>KM: {kmValue[0].toLocaleString()}&nbsp;-&nbsp;{kmValue[1].toLocaleString()}</span>
               </div>
               <Slider
@@ -386,16 +387,17 @@ const FilterCars = ({ setUrlState }) => {
         </div>
       </div>
       {/* Location Group */}
-      <div className="mb-2 flex-1">
+      <div className=" mb-2 flex-1">
         <div className="bg-white rounded-xl border border-black p-4  h-full">
           
           <div className="space-y-2">
             <Autocomplete
               id="state-autocomplete"
+              className="hidden"
               freeSolo
               options={StateData}
               getOptionLabel={(option) => option.state}
-              sx={{ width: "100%", background: "White", boxShadow: 'none', '& .MuiOutlinedInput-root': { boxShadow: 'none', minHeight: 36, fontSize: 14, padding: '0 8px' }, '& fieldset': { boxShadow: 'none' }, m: 0 }}
+              sx={{  width: "100%", background: "White", boxShadow: 'none', '& .MuiOutlinedInput-root': { boxShadow: 'none', minHeight: 36, fontSize: 14, padding: '0 8px' }, '& fieldset': { boxShadow: 'none' }, m: 0 }}
               value={filterForm.state ? { state: filterForm.state } : { state: "" }}
               onChange={(event, newValue) => {
                 setFilterForm((prevForm) => ({
@@ -485,6 +487,7 @@ const FilterCars = ({ setUrlState }) => {
             />
             <Autocomplete
               id="bodytype-autocomplete"
+              className="hidden"
               freeSolo
               options={[]} // TODO: Add body type options
               getOptionLabel={(option) => option}
@@ -497,6 +500,7 @@ const FilterCars = ({ setUrlState }) => {
             />
             <Autocomplete
               id="ownership-autocomplete"
+              className="hidden"
               freeSolo
               options={[]} // TODO: Add ownership options
               getOptionLabel={(option) => option}

@@ -68,7 +68,7 @@ useEffect(() => {
   const path = location.pathname;
   if (path === "/") {
     setActiveTab("Home");
-  } else if (path === "/PremiumCarPage") {
+  } else if (path === "/PremiumCarList") {
     setActiveTab("Premium Cars");
   } else if (path === "/carlist") {
     setActiveTab("Buy Car");
@@ -288,12 +288,12 @@ useEffect(() => {
         </Typography>
       </Link>
 
-      <Link to={"/PremiumCarPage"}>
+      <Link to={"/PremiumCarList"}>
         <Typography
           as="li"
           variant="small"
           color="white"
-          className={`p-3 rounded-md font-normal ${window.location.pathname === "/PremiumCarPage"
+          className={`p-3 rounded-md font-normal ${window.location.pathname === "/PremiumCarList"
               ? "bg-[#5e67c7] text-white"
               : ""
             } hover:bg-indigo-400 `}
@@ -355,7 +355,7 @@ useEffect(() => {
         <div className="hidden sm:flex items-center gap-6 lg:gap-10 text-white">
           {[
             { label: "Home", path: "/" }, 
-            { label: "Premium Cars", path: "/PremiumCarPage" }, 
+            { label: "Premium Cars", path: "/PremiumCarList" }, 
             { label: "Buy Car", path: "/carlist" }
           ].map(({ label, path }) => {  
             const isActive = activeTab === label;
@@ -450,7 +450,7 @@ useEffect(() => {
           <Link to="/" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
             Home
           </Link>
-          <Link to="/PremiumCarPage" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
+          <Link to="/PremiumCarList" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
             Premium Cars
           </Link>
           <Link to="/carlist" onClick={() => setOpenNav(false)} className="hover:text-gray-300">
