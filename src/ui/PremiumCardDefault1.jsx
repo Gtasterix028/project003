@@ -113,7 +113,7 @@ export function PremiumCardDefault1({ data, Carid, refetch }) {
       {/* Content */}
       <div className="p-4">
         {/* Car Type */}
-        <span className="text-yellow-500 text-sm font-semibold">
+        <span className="text-yellow-600 text-sm font-semibold">
           {data.bodyType || "Sedan"}
         </span>
 
@@ -136,7 +136,7 @@ export function PremiumCardDefault1({ data, Carid, refetch }) {
         </div>
 
         {/* Price */}
-        <p className="text-yellow-500 font-semibold text-lg mt-3">
+        <p className="text-yellow-600 font-semibold text-lg mt-3">
           ₹ {data.price}
         </p>
 
@@ -153,7 +153,7 @@ export function PremiumCardDefault1({ data, Carid, refetch }) {
             </span>
           </div>
           <Link to={`/carlist/cardetails/premium/${data.carId}`}>
-            <button className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-1 rounded-lg text-sm font-medium">
+            <button className="bg-yellow-400 hover:bg-yellow-500 text-brown-500 px-4 py-1 rounded-lg text-sm font-medium">
               View Car
             </button>
           </Link>

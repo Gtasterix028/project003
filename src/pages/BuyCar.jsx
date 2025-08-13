@@ -128,7 +128,7 @@ const BuyCar = () => {
   const token = Cookies.get("token");
   const [urlState, setUrlState] = useState(null);
   const [sortBy, setSortBy] = useState("default");
-  const [showCount, setShowCount] = useState(30);
+  // const [showCount, setShowCount] = useState(30);
   const [currentPage, setCurrentPage] = useState(1);
   const carsPerPage = 6;
 
@@ -298,7 +298,7 @@ const BuyCar = () => {
               <option value="year_oldest">Year: Oldest First</option>
             </select>
 
-            <select
+            {/* <select
               className="rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
               value={showCount}
               onChange={(e) => setShowCount(Number(e.target.value))}
@@ -307,7 +307,7 @@ const BuyCar = () => {
               <option value={20}>Show: 20</option>
               <option value={30}>Show: 30</option>
               <option value={50}>Show: 50</option>
-            </select>
+            </select> */}
           </div>
 
           {/* Right: results text */}
@@ -343,13 +343,13 @@ const BuyCar = () => {
       </div>
         
 
-          <div className="hidden md:block md:col-span-2 lg:col-span-1 w-75 h-full   ">
+          <div className="hidden md:block md:col-span-1 lg:col-span-1 w-full max-w-[520px] h-full">
             <div className="sticky top-0 flex flex-col">
               <FilterCars setUrlState={setUrlState} onFilterChange={refetch} />
             </div>
           </div>
           {/* Car cards on the right */}
-          <div className="md:col-span-3 lg:col-span-3 mt-8 overflow-y-auto no-scrollbar scroll-smooth">
+          <div className="md:col-span-4 lg:col-span-3 mt-8 overflow-y-auto no-scrollbar scroll-smooth">
             {error?.status === 404 ? (
               <div className="text-center py-12">
                 <div className="flex justify-center mb-4">

@@ -19,12 +19,12 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavoriteCar, removeFavoriteCar } from "../pages/favoritesSlice";
-import DriveEtaIcon from '@mui/icons-material/DriveEta'; // Example icon for KM
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation'; // Example icon for fuel type
-import TransmissionIcon from '@mui/icons-material/Settings'; // Example icon for transmission (you can choose a better one)
-import { FaArrowRight } from 'react-icons/fa';
+import DriveEtaIcon from "@mui/icons-material/DriveEta"; // Example icon for KM
+import LocalGasStationIcon from "@mui/icons-material/LocalGasStation"; // Example icon for fuel type
+import TransmissionIcon from "@mui/icons-material/Settings"; // Example icon for transmission (you can choose a better one)
+import { FaArrowRight } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
-import CheckCircle from '@mui/icons-material/CheckCircle';
+import CheckCircle from "@mui/icons-material/CheckCircle";
 
 function RatedIcon() {
   return (
@@ -58,7 +58,7 @@ function UnratedIcon() {
   );
 }
 
-export function CardDefault({ data, Carid, refetch,isLoading }) {
+export function CardDefault({ data, Carid, refetch, isLoading }) {
   const dispatch = useDispatch();
   const favoriteCars = useSelector((state) => state.favorites.favoriteCars);
   const [isHovered, setIsHovered] = useState(false);
@@ -114,12 +114,19 @@ export function CardDefault({ data, Carid, refetch,isLoading }) {
 
   // Seller info from API data - simplified to show only basic info
   const seller = {
-    name: dealerData?.dealerName || data.dealerName || data.sellerName || "Seller",
+    name:
+      dealerData?.dealerName || data.dealerName || data.sellerName || "Seller",
     ownership: data.ownerType || data.ownership || "First Owner", // Ownership status
-    profileImg: dealerData?.profileImage || data.dealerProfileImage || data.sellerImg || "/public/logos/dummy-profile-pic.jpg",
+    profileImg:
+      dealerData?.profileImage ||
+      data.dealerProfileImage ||
+      data.sellerImg ||
+      "/public/logos/dummy-profile-pic.jpg",
   };
 
-  const combinedText = `${data.year || ''} ${data.brand || ''} ${data.model || ''}`;
+  const combinedText = `${data.year || ""} ${data.brand || ""} ${
+    data.model || ""
+  }`;
   const truncatedText =
     combinedText.length > 25
       ? combinedText.substring(0, 22) + "..."
@@ -128,9 +135,9 @@ export function CardDefault({ data, Carid, refetch,isLoading }) {
   // Format price with proper currency
   const formatPrice = (price) => {
     if (!price) return "Price not available";
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
@@ -143,51 +150,94 @@ export function CardDefault({ data, Carid, refetch,isLoading }) {
   };
 
   return (
-    <div className="w-full bg-white rounded-xl shadow flex flex-row items-center p-4 mb-4 max-w-4xl mx-auto border border-gray-200 hover:shadow-lg transition-all">
+    // <div
+    //   className="w-full bg-white rounded-xl shadow border border-gray-200 hover:shadow-lg transition-all 
+    //   flex items-center p-4 mb-4 max-w-4xl mx-auto md:flex-row
+    //   flex-col sm:flex-row"
+    // >
+    <div
+  className="w-full bg-white rounded-xl shadow border border-gray-200 hover:shadow-lg transition-all 
+  flex flex-col md:flex-row items-center p-4 mb-4 max-w-4xl mx-auto"
+>
       {/* Car Image */}
-      <div className="flex-shrink-0 w-64 h-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+      {/* <div
+        className=" w-full h-48 sm:w-64 sm:h-48  md:w-64 md:h-48 
+      rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center
+    "
+      > */}
+       <div
+    className="w-full h-48 md:w-64 md:h-48 
+    rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center"
+  >
         <Link to={`/carlist/cardetails/${data.carId}`}>
           <img
-            src={data.images && data.images.length > 0 ? data.images[0] : data.carImage || '/public/cars/no-image-available.png'}
+            src={
+              data.images && data.images.length > 0
+                ? data.images[0]
+                : data.carImage || "/public/cars/no-image-available.png"
+            }
             alt={combinedText}
             className="object-cover w-full h-full"
             onError={(e) => {
-              e.target.src = '/public/cars/no-image-available.png';
+              e.target.src = "/public/cars/no-image-available.png";
             }}
           />
         </Link>
       </div>
       {/* Car Info */}
-      <div className="flex-1 px-6 flex flex-col justify-between h-full min-w-0">
+      <div className="flex-1 px-0 md:px-6 flex flex-col justify-between h-full min-w-0 mt-3 md:mt-0">
         <div className="flex items-center mb-1">
-          <span className="text-xs text-orange-500 font-semibold mr-2">{data.bodyType || 'Sedan'}</span>
+          <span className="text-xs text-orange-500 font-semibold mr-2">
+            {data.bodyType || "Sedan"}
+          </span>
         </div>
-        <div className="font-semibold text-lg text-gray-900 truncate">{combinedText}</div>
-        <div className="flex items-center text-gray-500 text-sm mt-1 mb-2 space-x-4">
+        <div className="font-semibold text-lg text-gray-900 truncate">
+          {combinedText}
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-1
+        text-gray-500 text-sm mt-1 mb-2">
           <span className="flex items-center">
-            <DriveEtaIcon className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
+            <DriveEtaIcon
+              className="text-green-600 mr-1"
+              style={{ fontSize: "1rem" }}
+            />
             {formatKm(data.kmDriven)}
           </span>
           <span className="flex items-center">
-            <LocalGasStationIcon className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
-            {data.fuelType || 'N/A'}
+            <LocalGasStationIcon
+              className="text-green-600 mr-1"
+              style={{ fontSize: "1rem" }}
+            />
+            {data.fuelType || "N/A"}
           </span>
           <span className="flex items-center">
-            <TransmissionIcon className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
-            {data.transmission || 'N/A'}
+            <TransmissionIcon
+              className="text-green-600 mr-1"
+              style={{ fontSize: "1rem" }}
+            />
+            {data.transmission || "N/A"}
           </span>
           <span className="flex items-center">
-            <FaLocationDot className="text-green-600 mr-1" style={{fontSize:'1rem'}} /> 
-            {data.area || data.location || 'N/A'}
+            <FaLocationDot
+              className="text-green-600 mr-1"
+              style={{ fontSize: "1rem" }}
+            />
+            {data.area || data.location || "N/A"}
           </span>
         </div>
-        <div className="text-orange-600 font-bold text-xl mb-2">{formatPrice(data.price)}</div>
+        <div className="text-orange-600 font-bold text-xl mb-2">
+          {formatPrice(data.price)}
+        </div>
         <Link to={`/carlist/cardetails/${data.carId}`}>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition flex items-center text-sm font-semibold">View Details <FaArrowRight className="ml-2" /></button>
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition flex items-center text-sm font-semibold w-full sm:w-auto justify-center
+        ">
+            View Details <FaArrowRight className="ml-2" />
+          </button>
         </Link>
       </div>
       {/* Seller Info - Simplified */}
-      <div className="flex flex-col items-center justify-center w-32 border-l pl-4 min-h-[100px]">
+      {/* <div className="flex flex-col items-center justify-center w-full sm:w-32 sm:border-l sm:pl-4 min-h-[100px]"> */}
+          <div className="flex flex-col items-center justify-center w-full md:w-32 md:border-l md:pl-4 min-h-[100px]">
         {dealerLoading ? (
           <div className="flex flex-col items-center">
             <div className="w-12 h-12 rounded-full bg-gray-200 animate-pulse mb-2"></div>
@@ -196,16 +246,20 @@ export function CardDefault({ data, Carid, refetch,isLoading }) {
           </div>
         ) : (
           <>
-            <img 
-              src={seller.profileImg} 
-              alt={seller.name || "Seller"} 
+            <img
+              src={seller.profileImg}
+              alt={seller.name || "Seller"}
               className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 mb-2"
               onError={(e) => {
                 e.target.src = "/public/logos/dummy-profile-pic.jpg";
               }}
             />
-            <div className="text-gray-900 font-semibold text-xs text-center truncate w-full mb-1">{seller.name}</div>
-            <div className="text-gray-500 text-xs text-center">{seller.ownership}</div>
+            <div className="text-gray-900 font-semibold text-xs text-center truncate w-full  ">
+              {seller.name}
+            </div>
+            <div className="text-gray-500 text-xs text-center">
+              {seller.ownership}
+            </div>
           </>
         )}
       </div>

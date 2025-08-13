@@ -257,197 +257,126 @@ const FilterCars1 = ({ setUrlState }) => {
   // };
 
   return (
-    <div className="border-2 shadow-lg rounded-lg m-2 mt-10 ">
-      <div className="flex justify-between">
-        {/* <div className="-mt-10 text-white text-3xl font-[sourceSans] font-bold flex hover:rounded-2xl hover:shadow-2xl">
-          Premium Cars
-        </div> */}
-        {/* <div>
-          <button
-            type="button"
-            className="-mt-10 text-white text-lg font-bold font-[sourceSans] flex hover:rounded-2xl hover:shadow-2xl "
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <span className="mt-[6px] mr-1">
-              <FaFilter />
-            </span>
-            Filter
-          </button>
-        </div> */}
+   
+      <Card className="p-6 bg-gray-50 w-full max-w-6xl mx-auto shadow-lg rounded-lg">
+  <div className="space-y-4">
+    <form onSubmit={submitHandle} className="flex flex-col items-center w-full">
+      <p className="font-semibold mb-5 text-xl text-black text-center">
+        Let&apos;s Find Your Dream Car
+      </p>
+      <hr className="mb-6 border-t-2 border-gray-200 w-full" />
+
+      {/* Responsive grid: 1 col (mobile) → 2 col (tablet) → 3 col (desktop) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        
+        {/* Area */}
+        <div>
+          <label className="font-bold">Area</label>
+          <Autocomplete
+            id="area-autocomplete"
+            freeSolo
+            options={AreaData}
+            getOptionLabel={(option) => option.area}
+            sx={{ background: "white" }}
+            value={filterForm.area ? { area: filterForm.area } : { area: "" }}
+            onInputChange={(e, val) => setFilterForm({ ...filterForm, area: val })}
+            onChange={(e, val) => setFilterForm({ ...filterForm, area: val ? val.area : "" })}
+            renderInput={(params) => <TextField {...params} label="Area" fullWidth />}
+          />
+        </div>
+
+        {/* Year */}
+        <div>
+          <label className="font-bold">Year</label>
+          <Autocomplete
+            id="year-autocomplete"
+            freeSolo
+            options={Year}
+            getOptionLabel={(option) => option.year.toString()}
+            sx={{ background: "white" }}
+            value={filterForm.year ? { year: filterForm.year } : { year: "" }}
+            onInputChange={(e, val) => setFilterForm({ ...filterForm, year: val })}
+            onChange={(e, val) => setFilterForm({ ...filterForm, year: val ? val.year : "" })}
+            renderInput={(params) => <TextField {...params} label="Year" fullWidth />}
+          />
+        </div>
+
+        {/* Brands */}
+        <div>
+          <label className="font-bold">Brands</label>
+          <Autocomplete
+            id="brand-autocomplete"
+            freeSolo
+            options={brands}
+            getOptionLabel={(option) => option}
+            sx={{ background: "white" }}
+            value={filterForm.brand}
+            onChange={handleBrandChange}
+            renderInput={(params) => <TextField {...params} label="Brands" fullWidth />}
+          />
+        </div>
+
+        {/* Models */}
+        <div>
+          <label className="font-bold">Models</label>
+          <Autocomplete
+            id="model-autocomplete"
+            freeSolo
+            options={modelOptions}
+            getOptionLabel={(option) => option}
+            sx={{ background: "white" }}
+            value={filterForm.model}
+            onChange={handleModelChange}
+            renderInput={(params) => <TextField {...params} label="Models" fullWidth />}
+          />
+        </div>
+
+        {/* Fuel Type */}
+        <div>
+          <label className="font-bold">Fuel Type</label>
+          <Autocomplete
+            id="fueltype-autocomplete"
+            freeSolo
+            options={FuleType}
+            getOptionLabel={(option) => option.fuelType}
+            sx={{ background: "white" }}
+            value={filterForm.fuelType ? { fuelType: filterForm.fuelType } : { fuelType: "" }}
+            onInputChange={(e, val) => setFilterForm({ ...filterForm, fuelType: val })}
+            onChange={(e, val) => setFilterForm({ ...filterForm, fuelType: val ? val.fuelType : "" })}
+            renderInput={(params) => <TextField {...params} label="Fuel Type" fullWidth />}
+          />
+        </div>
+
+        {/* Transmission */}
+        <div>
+          <label className="font-bold">Transmission</label>
+          <Autocomplete
+            id="transmission-autocomplete"
+            freeSolo
+            options={Transmission}
+            getOptionLabel={(option) => option.transmission}
+            sx={{ background: "white" }}
+            value={filterForm.transmission ? { transmission: filterForm.transmission } : { transmission: "" }}
+            onInputChange={(e, val) => setFilterForm({ ...filterForm, transmission: val })}
+            onChange={(e, val) => setFilterForm({ ...filterForm, transmission: val ? val.transmission : "" })}
+            renderInput={(params) => <TextField {...params} label="Transmission" fullWidth />}
+          />
+        </div>
       </div>
 
-      <Card className={`p-4 ${showFilters ? "block" : "hidden bg-gray-100"}`}>
-        <div className=" h-[350px] space-y-4">
-          <form onSubmit={submitHandle} >
-            <div>
-              <p className="font-semibold mb-5 text-xl text-black">Let&apos;s Find Your Dream Car </p>
-            </div>
-            <hr className="mb-6 border-t-2 border-gray-200" />
-            <div className="md:mb-1 md:grid md:grid-cols-5 md:gap-6 md:items-center">
-              
-               
-
-                
-              
-                
-            
-              <div>
-                <leble className="font-bold" >Area</leble>
-                <Autocomplete
-                  id="area-autocomplete"
-                  className="my-5 "
-                  freeSolo
-                  options={AreaData}
-                  getOptionLabel={(option) => option.area}
-                  sx={{ width: "100%", background: "White" }}
-                  value={
-                    filterForm.area ? { area: filterForm.area } : { area: "" }
-                  }
-                  onInputChange={(event, newInputValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      area: newInputValue,
-                    }));
-                  }}
-                  onChange={(event, newValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      area: newValue ? newValue.area : "",
-                    }));
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Area" />
-                  )}
-                />
-                <leble className="font-bold">Year</leble>
-                <Autocomplete
-                  id="year-autocomplete"
-                  className="my-5"
-                  freeSolo
-                  options={Year}
-                  getOptionLabel={(option) => option.year.toString()}
-                  sx={{ width: "Full", background: "White" }}
-                  value={
-                    filterForm.year ? { year: filterForm.year } : { year: "" }
-                  } // Bind to state
-                  onInputChange={(event, newInputValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      year: newInputValue,
-                    }));
-                  }}
-                  onChange={(event, newValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      year: newValue ? newValue.year : "",
-                    }));
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Year" />
-                  )}
-                />
-              </div>
-              <div>
-              <leble className="font-bold">Brands</leble>
-                <Autocomplete
-                  id="brand-autocomplete"
-                  className="my-5"
-                  freeSolo
-                  options={brands}
-                  getOptionLabel={(option) => option}
-                  sx={{ width: "Full", background: "White" }}
-                  value={filterForm.brand}
-                  onChange={handleBrandChange}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Brands" />
-                  )}
-                />
-                  <leble className="font-bold">ModelOptions</leble>
-                <Autocomplete
-                  id="model-autocomplete"
-                  className="my-5"
-                  freeSolo
-                  options={modelOptions}
-                  getOptionLabel={(option) => option}
-                  sx={{ width: "Full", background: "White" }}
-                  value={filterForm.model}
-                  onChange={handleModelChange}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Models" />
-                  )}
-                />
-              </div>
-              <div>
-              <leble className="font-bold">FuelType</leble>
-                <Autocomplete
-                  id="fueltype-autocomplete"
-                  className="my-5"
-                  freeSolo
-                  options={FuleType}
-                  getOptionLabel={(option) => option.fuelType}
-                  sx={{ width: "Full", background: "White" }}
-                  value={
-                    filterForm.fuelType
-                      ? { fuelType: filterForm.fuelType }
-                      : { fuelType: "" }
-                  } // Bind to state
-                  onInputChange={(event, newInputValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      fuelType: newInputValue,
-                    }));
-                  }}
-                  onChange={(event, newValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      fuelType: newValue ? newValue.fuelType : "",
-                    }));
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Fuel Type" />
-                  )}
-                />
-                 <leble className="font-bold">Transmission</leble>
-                <Autocomplete
-                  id="transmission-autocomplete"
-                  className="my-5"
-                  freeSolo
-                  options={Transmission}
-                  getOptionLabel={(option) => option.transmission}
-                  sx={{ width: "Full", background: "White" }}
-                  value={
-                    filterForm.transmission
-                      ? { transmission: filterForm.transmission }
-                      : { transmission: "" }
-                  } // Bind to state
-                  onInputChange={(event, newInputValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      transmission: newInputValue,
-                    }));
-                  }}
-                  onChange={(event, newValue) => {
-                    setFilterForm((prevForm) => ({
-                      ...prevForm,
-                      transmission: newValue ? newValue.transmission : "",
-                    }));
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Transmission" />
-                  )}
-                />
-              </div>
-              <div className="flex gap-5 md:flex-col lg:flex mt-20 ">
-                <Button type="  submit" className="bg-orange-400  text-color-black mt-14 p-5">
-                  Search
-                </Button>
-               
-              </div>
-            </div>
-          </form>
-        </div>
-      </Card>
-    </div>
+      {/* Search Button */}
+      <div className="flex justify-center mt-6 w-full">
+        <Button
+          type="submit"
+          className="bg-orange-400 text-black px-10 py-3 rounded-lg shadow-md hover:bg-orange-500 transition-all"
+        >
+          Search
+        </Button>
+      </div>
+    </form>
+  </div>
+</Card>
+    // </div>
   );
 };
 

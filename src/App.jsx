@@ -113,6 +113,7 @@ import B2BSeller from "./pages/b2b/B2BSeller";
 import B2BPendingRequest from "./pages/dealer/B2BPendingRequest";
 import OrderDealerB2B from "./pages/dealer/OrderDealerB2B";
 import AdminB2BList from "./pages/b2b/AdminB2BList";
+import ScrollToTopButton from "./ui/ScrollToTopButton";
 export default function App() {
   return (
     <>
@@ -450,7 +451,10 @@ export default function App() {
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/cookiepolicy" element={<CookiePolicy />} />
         </Route>
+        
+        
       </Routes>
+      < ScrollToTopButton/>
     </>
   );
 }

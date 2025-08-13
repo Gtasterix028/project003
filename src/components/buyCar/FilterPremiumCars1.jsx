@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 
 // eslint-disable-next-line react/prop-types
-const FilterPremiumCars1 = ({ setUrlState }) => {
+const FilterPremiumCars1 = ({ setUrlState, setSearchClicked }) => {
   const { data: brandData } = useGetOnlyBrandsQuery();
   const brands = brandData?.list.map((item) => item.brand) || [];
 
@@ -91,6 +91,12 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
       MaxPrice: maxPrice,
     };
     setUrlState(url);
+    setSearchClicked(true);
+
+     window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
   };
 
   const resetForm = () => {
@@ -120,7 +126,12 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
       transmission: "",
       MinPrice: 1500000, // Reset MinPrice
       MaxPrice: 100000000, // Reset MaxPrice
+
     });
+     window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
   };
 
   let formattedAmountMin = new Intl.NumberFormat("en-IN").format(value[0]);
@@ -252,7 +263,7 @@ const FilterPremiumCars1 = ({ setUrlState }) => {
 
   return (
     
-    <div className="  shadow-lg rounded-lg ">
+    <div className="  shadow-lg rounded-lg w-full ">
              <Card className={`p-4 ${showFilters ? "block" : "hidden bg-gray-100"}`}>
         <div className="space-y-4">
           <form onSubmit={submitHandle}>

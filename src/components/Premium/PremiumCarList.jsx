@@ -16,14 +16,16 @@ import FilterPremiumCars1 from "../buyCar/FilterPremiumCars1";
 import CarBanner from "../PremiumCar/CarBanner";
 
 const PremiumCarList = () => {
+  const [searchClicked, setSearchClicked]=useState(false);   
   const dispatch = useDispatch();
   const token = Cookies.get("token");
   const [urlState, setUrllState] = useState(null);
 
+
   const emptyImage = "..\\..\\cars\\emptyfolder.png";
 
   const { data, isLoading, error, refetch } =
-    useFilterCarPremiumQuery(urlState);
+    useFilterCarPremiumQuery(urlState ,{skip:!urlState});
   let jwtDecodes;
   if (token) {
     jwtDecodes = jwtDecode(token);
@@ -51,16 +53,17 @@ const PremiumCarList = () => {
 
   return (
   <>
-    <CarBanner />
+  {!searchClicked && <CarBanner/>}
+    {/* <CarBanner /> */}
     <div className="bg-black min-h-screen">
-
+        
         <div
         className=" p-4 sm:p-8 flex flex-col items-center"
         style={{
           background:
             "radial-gradient(50% 50% at 50% 50%, #2A2929 34.62%, #000000 92.79%)",
         }}
-      >
+      > 
        {/* Centered heading section */}
         <div className="w-full max-w-[788px] flex flex-col items-center justify-center mb-12">
           {/* Main heading with colored spans */}
@@ -88,6 +91,8 @@ const PremiumCarList = () => {
               <FilterPremiumCars1
                 setUrlState={setUrllState}
                 onFilterChange={refetch}
+                setSearchClicked={setSearchClicked}
+                 
               />
             </div>
             <div className="lg:col-span-3 no-scrollbar mt-6">

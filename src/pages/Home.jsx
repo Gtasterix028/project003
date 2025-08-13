@@ -30,13 +30,14 @@ const Home = () => {
         <HomeSection />
   
         {/* Component C: CarFilterForm */}
-        <div className="absolute top-[480px] left-1/2 transform -translate-x-1/2 z-50 w-full px-4 md:px-8">
+        <div className="w-full px-4 md:px-8
+      md:absolute md:top-[550px] md:left-1/2 md:transform md:-translate-x-1/2 md:z-50">
           <CarFilterForm/>
         </div>
         
   
         {/* Spacer to make room for the overlapping form */}
-        <div className="h-[200px]"></div>
+       <div className="hidden md:block h-[200px]"></div>
   
         {/* Component B: FeaturedCars */}
         <FeatureSection/>
