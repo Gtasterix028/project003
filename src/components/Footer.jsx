@@ -251,14 +251,15 @@
 
 // export default Footer;
 
-
-import  { useRef } from "react";
-import Logo from "../assets/logo.png"
+import { useRef, useState } from "react";
+import Logo from "../assets/logo.png";
+import GetInTouchModal from "../ui/GetInTouchModal";
 
 
 const Footer = () => {
   const logoRef = useRef(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+ 
   const footerColumns = [
     {
       title: "Home",
@@ -297,7 +298,7 @@ const Footer = () => {
       ],
     },
   ];
-
+ 
   return (
     <footer className="w-full bg-[#323232] text-white pt-12 pb-8 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto">
@@ -333,7 +334,7 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-
+ 
           <div className="space-y-4">
             <h3
               className="text-white font-semibold capitalize mb-2"
@@ -363,7 +364,7 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-
+ 
           {/* Mobile: Second row (Other + Newsletter) */}
           <div className="space-y-4 col-span-2 md:col-span-1">
             <h3
@@ -394,7 +395,7 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-
+ 
           <div className="space-y-4 col-span-2 md:col-span-1">
             <h3
               className="text-white font-semibold capitalize mb-2"
@@ -414,21 +415,29 @@ const Footer = () => {
               Stay on top of the latest car trends, tips, and tricks for selling
               your car.
             </p>
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="w-full h-12 px-4 mb-3 rounded-2xl border border-[#6666664A] bg-transparent focus:outline-none focus:ring-2 focus:ring-[#FF7101] text-sm"
-              style={{ maxWidth: "350px" }}
-            />
-            <button
-              className="w-full h-12 rounded-2xl bg-[#FF7101] text-white font-medium hover:bg-[#E56700] transition-colors duration-200 flex items-center justify-center text-sm"
-              style={{ maxWidth: "350px" }}
-            >
-              Send
-            </button>
+ 
+            <div>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                type="button"
+                className="align-middle select-none font-sans font-bold text-center uppercase
+                          disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs
+                          shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85]
+                          focus:shadow-none active:opacity-[0.85] active:shadow-none bg-orange-400 text-black
+                          px-10 py-3 rounded-lg shadow-md hover:bg-orange-500 transition-all"
+                style={{ position: "relative", overflow: "hidden" }}
+              >
+                Get in Touch
+              </button>
+ 
+              <GetInTouchModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+              />
+            </div>
           </div>
         </div>
-
+ 
         {/* Logo at bottom with bounce animation */}
         <div ref={logoRef} className="mt-8 animate-bounce">
           <img src={Logo} alt="Company Logo" className="h-10 w-auto" />
@@ -437,5 +446,5 @@ const Footer = () => {
     </footer>
   );
 };
-
+ 
 export default Footer;

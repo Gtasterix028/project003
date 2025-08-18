@@ -21,7 +21,7 @@ import {
 } from "react-icons/io5";
 import imageCompression from "browser-image-compression";
 
-function UploadImages2() {
+function UploadImages2() {  
   const [images, setImages] = useState([]);
   const [uploadStatus, setUploadStatus] = useState({});
   const { id ,carId } = useParams();

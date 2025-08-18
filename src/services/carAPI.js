@@ -108,9 +108,9 @@ export const carApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["CAR"],
     }),
-    carRegisterPremium: builder.mutation({
+    carRegisterPremium: builder.mutation({  
       query: (data, carType) => ({
-        url: `/car/carregister?carType=premium`,
+       url: `/car/carregister`,
 
         body: data,
         method: "POST",

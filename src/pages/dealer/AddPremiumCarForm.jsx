@@ -204,14 +204,14 @@ export default function AddPremiumCarForm() {
       carInsuranceType: formData.carInsuranceType,
     };
     // console.log(data);
-    const res = await carRegister(data, { carType: "premium" });
-    // console.log(res);
-    if (res?.data?.status === "success") {
-      toast.success("Car Added");
-      setTimeout(() => {
-        navigate(`/dealer/${id}/uploadimage/${res?.data?.message}`); // Corrected URL string with backticks (`) for interpolation
-      }, 2000);
-    }
+      const res = await carRegister(data, { carType: "premium" });
+      // console.log(res);
+      if (res?.data?.status === "success") {
+        toast.success("Car Added");
+        setTimeout(() => {
+          navigate(`/dealer/${id}/uploadimage/${res?.data?.message}`); // Corrected URL string with backticks (`) for interpolation
+        }, 2000);
+      }
   };
 
   const handleBrandChange = (event, newValue) => {
