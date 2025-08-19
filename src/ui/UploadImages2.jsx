@@ -21,23 +21,22 @@ import {
 } from "react-icons/io5";
 import imageCompression from "browser-image-compression";
 
-function UploadImages2() {  
+function UploadImages2() {
   const [images, setImages] = useState([]);
   const [uploadStatus, setUploadStatus] = useState({});
-  const { id ,carId } = useParams();
+  const { id, carId } = useParams();
   const token = Cookies.get("token");
   let jwtDecodes;
 
   if (token) {
     jwtDecodes = jwtDecode(token);
+    console.log("this is the token",token);
   }
+
 
   const UserID = jwtDecodes?.userId;
   const { data } = useDealerIdByCarQuery({ id, pageNo: 0, status: "Active" });
-  // console.log(data);
-  // const firstCarId = data?.list?.length > 0 ? data?.list[0].carId : null;
   const firstCarId = carId;
-  // console.log(firstCarId);
 
   const [addCarImages] = useAddCarImagesMutation();
 
@@ -49,13 +48,12 @@ function UploadImages2() {
       files.map(async (file) => {
         try {
           const compressedFile = await imageCompression(file, {
-            maxSizeMB: 1, // Maximum file size (MB)
-            maxWidthOrHeight: 1920, // Max width or height
-            useWebWorker: true, // Use multi-threading for faster compression
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
           });
           return compressedFile;
         } catch (error) {
-          // console.error(error);
           toast.error("Image Compression Failed");
           return null;
         }
@@ -63,43 +61,38 @@ function UploadImages2() {
     );
 
     const validCompressedFiles = compressedFiles.filter(file => file !== null);
-
     setImages(validCompressedFiles);
 
-    for (const file of validCompressedFiles) {
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("document", documentType);
-      // console.log(file, documentType, 'Rishi');
+   for (const file of validCompressedFiles) {
+  try {
+    const response = await addCarImages({
+      file,
+      documentType,
+      premiumCarId: firstCarId,
+      userId: jwtDecodes?.userId 
+    }).unwrap();
 
-      try {
-        const response = await addCarImages({
-          formData,
-          document: documentType,
-          firstCarId,
-          UserID,
-        }).unwrap();
-        // console.log(response);
-        toast.success("Uploaded Successfully");
-        setUploadStatus((prevStatus) => ({
-          ...prevStatus,
-          [file.name]: "success",
-        }));
-      } catch (error) {
-        // console.error(error);
-        toast.error("Upload Failed");
-        setUploadStatus((prevStatus) => ({
-          ...prevStatus,
-          [file.name]: "error",
-        }));
-      }
-    }
+    toast.success("Uploaded Successfully");
+    setUploadStatus((prevStatus) => ({
+      ...prevStatus,
+      [file.name]: "success",
+    }));
+  } catch (error) {
+    toast.error("Upload Failed");
+    setUploadStatus((prevStatus) => ({
+      ...prevStatus,
+      [file.name]: "error",
+    }));
+  }
+}
 
     setData((prevData) =>
       prevData.map((category) => {
         if (category.value === categoryValue) {
           const updatedImages =
-            categoryValue === "coverimage" ? files : [...category.images, ...files];
+            categoryValue === "coverimage"
+              ? files
+              : [...category.images, ...files];
           return {
             ...category,
             images: updatedImages,
@@ -109,7 +102,7 @@ function UploadImages2() {
         return category;
       })
     );
-  }
+  };
 
   const navigate = useNavigate();
 
@@ -158,10 +151,7 @@ function UploadImages2() {
                           src={URL.createObjectURL(file)}
                           alt={`Image ${index + 1}`}
                           className="object-cover w-full h-auto"
-                          style={{
-                            height: "200px",
-                            margin: "5px",
-                          }}
+                          style={{ height: "200px", margin: "5px" }}
                         />
                         {uploadStatus[file.name] === "success" && (
                           <IoCheckmarkCircle className="absolute top-2 right-2 text-green-500 md:mr-6 md:h-8 md:w-8" />
