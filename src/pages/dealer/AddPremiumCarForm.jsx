@@ -55,7 +55,7 @@ export default function AddPremiumCarForm() {
   const brands = brandData?.list.map((item) => item.brand) || [];
   const { data: colorData } = useGetAllColorQuery();
   const colors = colorData?.list.map((item) => item.name) || [];
-  // console.log(brands);
+  
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [modelOptions, setModelOptions] = useState([]);
@@ -66,7 +66,7 @@ export default function AddPremiumCarForm() {
   const { data: variantData } = useGetVariantsQuery(selectedBrand, {
     skip: !selectedBrand,
   });
-  // console.log(variantData);
+  
   const { data: subVariantData } = useGetSubVariantsQuery(
     { brand: selectedBrand, variant: selectedModel },
     {
@@ -78,26 +78,45 @@ export default function AddPremiumCarForm() {
     .filter(
       (color) =>
         color && color.toLowerCase().includes((inputValue || "").toLowerCase())
-    ) // Ensure both color and inputValue are strings
-    .sort(); 
-  const { carType } = useParams();
-  const [carRegister] = useCarRegisterPremiumMutation({carType});
-  //  const [mult, setMult] = React.useState([]);
+    )
+    .sort();
+  
+  const { carType: carTypeParam } = useParams();
+  console.log("carType from params:", carTypeParam);
+  
+  const [carRegister] = useCarRegisterPremiumMutation();
+  const [error, setError] = useState(false);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
+
+  // Generate mainCarId function
+  const generateMainCarId = () => {
+    const brandAbbr = formData.brand?.replace(/\s+/g, '').substring(0, 5) || 'TEMP';
+    const modelAbbr = formData.model?.replace(/\s+/g, '').substring(0, 5) || 'TEMP';
+    return `MC-${brandAbbr}-${modelAbbr}-${Date.now()}`;
+  };
+
   const [formData, setFormData] = useState({
-    //features
+    // features
     acFeature: false,
     musicFeature: false,
     powerWindowFeature: false,
     rearParkingCameraFeature: false,
     buttonStart: false,
-    abs: false,
+    ABS: false,
     sunroof: false,
     airbag: false,
     childSafetyLocks: false,
 
-    // fields
+    // car details
     brand: "",
-    bodyType: "",
+    cVariant: "",
     price: "",
     model: "",
     year: "",
@@ -106,29 +125,31 @@ export default function AddPremiumCarForm() {
     city: "",
     fuelType: "",
     kmDriven: "",
-    carInsurance: "",
     registration: "",
     description: "",
     title: "",
     area: "",
-    carStatus: "Active",
-    ownerSerial: "",
-    dealer_id: "",
-    cVariant: "",
-    insurancedate: "",
-    insuranceType: "",
-    carInsuranceType: "",
-  });
-  const [error, setError] = useState(false);
-  const { id } = useParams();
-  // console.log(id);
-  const navigate = useNavigate();
-  const date = new Date(); // Create a new Date object with the current date
-  const year = date.getFullYear(); // Get the year (e.g., 2024)
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month (0-indexed, so add 1), pad with leading zero if needed
-  const day = String(date.getDate()).padStart(2, "0"); // Get the day of the month, pad with leading zero if needed
 
-  const formattedDate = `${year}-${month}-${day}`;
+    // insurance
+    carInsurance: false,
+    carInsuranceDate: "",
+    carInsuranceType: "",
+
+    // status
+    carStatus: "PENDING",
+    pendingApproval: false,
+
+    // ownership
+    ownerSerial: "",
+    dealerId: "",
+
+    // extra fields
+    pendingBookings: [],
+    carPhotoId: 0,
+    mainCarId: "",
+    carType: carTypeParam || "",
+    premiumCarPendingBookingId: [],
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -137,86 +158,95 @@ export default function AddPremiumCarForm() {
     if (formData.price < 1500000) {
       setError(true);
       toast.error("Price must be greater than 1,500,000");
-      return; // Stop submission if validation fails
+      return;
     } else {
-      setError(false); // Reset error if the validation passes
+      setError(false);
     }
-    // console.log(formData);
-    // Prepare the form data to send to the backend
+
+    // Clean variant field
+    const cleanedVariant = formData.cVariant?.replace(/\r/g, '').trim();
+
+    // Generate mainCarId
+    const mainCarId = generateMainCarId();
+
     const data = {
+      // Features
       buttonStart: formData.buttonStart,
-
-      abs: formData.abs,
-
+      ABS: formData.ABS,
       sunroof: formData.sunroof,
-
       airbag: formData.airbag,
-
       childSafetyLocks: formData.childSafetyLocks,
-
       acFeature: formData.acFeature,
-
       musicFeature: formData.musicFeature,
-
-      area: formData.area,
-
-      brand: formData.brand,
-
-      carInsurance: formData.carInsurance,
-
-      carStatus: "ACTIVE",
-
-      color: formData.color,
-
-      description: formData.description,
-
-      fuelType: formData.fuelType,
-
-      kmDriven: formData.kmDriven,
-
-      model: formData.model,
-
-      ownerSerial: formData.ownerSerial,
-
       powerWindowFeature: formData.powerWindowFeature,
-
-      city: formData.city,
-
-      price: formData.price,
-
       rearParkingCameraFeature: formData.rearParkingCameraFeature,
 
+      // Car details
+      area: formData.area,
+      brand: formData.brand,
+      variant: cleanedVariant, // Use cleaned variant
+      color: formData.color,
+      description: formData.description,
+      fuelType: formData.fuelType,
+      kmDriven: parseInt(formData.kmDriven, 10) || 0,
+      model: formData.model,
+      ownerSerial: parseInt(formData.ownerSerial, 10) || 0,
+      city: formData.city,
+      price: parseInt(formData.price, 10) || 0,
       registration: formData.registration,
-
       transmission: formData.transmission,
-
       title: formData.title,
+      year: parseInt(formData.year, 10) || null,
 
-      variant: formData.cVariant,
+      // Insurance
+      carInsurance: formData.carInsurance,
+      carInsuranceDate: formData.carInsuranceDate || "",
+      carInsuranceType: formData.carInsuranceType || "",
 
-      carInsuranceDate: formData.insurancedate,
+      // Status
+      carStatus: "PENDING",
+      pendingApproval: false,
 
-      year: formData.year,
-
-      dealer_id: id,
-
+      // Required fields
+      dealerId: parseInt(id, 10),
       date: formattedDate,
-      carInsuranceType: formData.carInsuranceType,
+      carPhotoId: 0,
+      mainCarId: mainCarId,
+      carType: formData.carType,
+      premiumCarPendingBookingId: [],
+
+      // Optional fields
+      pendingBookings: [],
     };
-    // console.log(data);
-      const res = await carRegister(data, { carType: "premium" });
-      // console.log(res);
-      if (res?.data?.status === "success") {
-        toast.success("Car Added");
+
+    console.log("Final Payload:", JSON.stringify(data, null, 2));
+
+    try {
+      const res = await carRegister(data).unwrap();
+      if (res?.status === "success") {
+        toast.success("Car Added Successfully!");
+        const mainCarId = res.message.split(":").pop().trim();
         setTimeout(() => {
-          navigate(`/dealer/${id}/uploadimage/${res?.data?.message}`); // Corrected URL string with backticks (`) for interpolation
-        }, 2000);
+          navigate(`/dealer/${id}/uploadimage/${mainCarId}`);
+        }, 1500);
       }
+    } catch (err) {
+      console.error("Full error:", err);
+      console.error("Error response:", err.data);
+      
+      if (err.data) {
+        toast.error(err.data.message || "Failed to register car");
+        if (err.data.errors) {
+          console.error("Validation errors:", err.data.errors);
+        }
+      } else {
+        toast.error("Network error or server unavailable");
+      }
+    }
   };
 
   const handleBrandChange = (event, newValue) => {
     const brand = newValue;
-    // console.log(brand);
     setSelectedBrand(brand);
     setFormData({
       ...formData,
@@ -237,8 +267,7 @@ export default function AddPremiumCarForm() {
   };
 
   const handleVariantChange = (event, newValue) => {
-    const cVariant = newValue;
-    // console.log(cVariant);
+    const cVariant = newValue?.replace(/\r/g, '').trim();
     setFormData({
       ...formData,
       cVariant,
@@ -247,12 +276,10 @@ export default function AddPremiumCarForm() {
 
   const handleColorChange = (event, newValue) => {
     const color = newValue;
-    
     setInputValue(color);
     setFormData({
       ...formData,
       color,
-      
     });
   };
 
@@ -261,7 +288,7 @@ export default function AddPremiumCarForm() {
     setFormData({
       ...formData,
       city: selectedCity,
-      registration: "", // Reset registration when city changes
+      registration: "",
     });
   };
 
@@ -273,7 +300,6 @@ export default function AddPremiumCarForm() {
     }));
   };
 
-  // Car Insurance ValidDate
   const handleChange = (event) => {
     const value = event.target.value === "true";
     setFormData((prevFormData) => ({
@@ -282,6 +308,7 @@ export default function AddPremiumCarForm() {
     }));
     setShowCalendar(value);
   };
+
   const handlePriceChange = (event) => {
     const value = event.target.value;
     setFormData({
@@ -289,7 +316,6 @@ export default function AddPremiumCarForm() {
       price: value,
     });
 
-    // Validate price
     if (value && value < 1500000) {
       setError(true);
     } else {
@@ -301,7 +327,7 @@ export default function AddPremiumCarForm() {
     const { value } = event.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      insurancedate: value,
+      carInsuranceDate: value,
     }));
   };
 
@@ -330,7 +356,8 @@ export default function AddPremiumCarForm() {
             <div className="flex justify-center">
               <p className="text-3xl font-semibold m-4">Add Premium Car</p>
             </div>
-            {/* first part */}
+            
+            {/* Brand and Model Selection */}
             <div className="md:flex gap-2">
               <div className="mt-5 w-full">
                 <Autocomplete
@@ -359,9 +386,7 @@ export default function AddPremiumCarForm() {
                       InputLabelProps={{
                         style: {
                           fontSize: "0.75rem",
-                          // paddingTop : '20px',
-                          //  background : 'black'
-                        }, // Adjust the font size here
+                        },
                       }}
                     />
                   )}
@@ -391,13 +416,11 @@ export default function AddPremiumCarForm() {
                         },
                       }}
                       {...params}
-                      label="Varient"
+                      label="Variant"
                       InputLabelProps={{
                         style: {
                           fontSize: "0.75rem",
-                          // paddingTop : '20px',
-                          //  background : 'black'
-                        }, // Adjust the font size here
+                        },
                       }}
                     />
                   )}
@@ -405,7 +428,7 @@ export default function AddPremiumCarForm() {
               </div>
             </div>
 
-            {/* second part */}
+            {/* SubVariant and Transmission */}
             <div className="md:flex">
               <div className="mt-5 w-full">
                 <Autocomplete
@@ -430,13 +453,11 @@ export default function AddPremiumCarForm() {
                         },
                       }}
                       {...params}
-                      label="SubVarient"
+                      label="SubVariant"
                       InputLabelProps={{
                         style: {
                           fontSize: "0.75rem",
-                          // paddingTop : '20px',
-                          //  background : 'black'
-                        }, // Adjust the font size here
+                        },
                       }}
                     />
                   )}
@@ -456,14 +477,14 @@ export default function AddPremiumCarForm() {
                     });
                   }}
                 >
-                  <option value="" disabled>
-                    Transmission
-                  </option>
+                  <option value="" disabled>Transmission</option>
                   <option>Automatic</option>
                   <option>Manual</option>
                 </select>
               </div>
             </div>
+
+            {/* Price and Year */}
             <div className="md:flex">
               <div className="mt-5 w-full">
                 <Input
@@ -472,11 +493,9 @@ export default function AddPremiumCarForm() {
                   type="number"
                   name="price"
                   value={formData.price}
-                  error={error} // Highlight input with error style
+                  error={error}
                   onChange={handlePriceChange}
-                  helperText={
-                    error ? "Value should be greater than 1,500,000" : ""
-                  }
+                  helperText={error ? "Value should be greater than 1,500,000" : ""}
                 />
               </div>
 
@@ -484,9 +503,6 @@ export default function AddPremiumCarForm() {
                 <select
                   required
                   className="w-full border-2 border-gray-400 p-2 rounded-md"
-                  label={"year"}
-                  type={"number"}
-                  name={"year"}
                   value={formData.year}
                   onChange={(event) =>
                     setFormData({
@@ -495,9 +511,7 @@ export default function AddPremiumCarForm() {
                     })
                   }
                 >
-                  <option value="" disabled>
-                    Year
-                  </option>
+                  <option value="" disabled>Year</option>
                   <option>2015</option>
                   <option>2016</option>
                   <option>2017</option>
@@ -512,20 +526,18 @@ export default function AddPremiumCarForm() {
               </div>
             </div>
 
-            {/* fourth part */}
+            {/* Color and Owner Serial */}
             <div className="md:flex">
               <div className="mt-5 w-full">
                 <Autocomplete
                   disablePortal
-                  options={filteredColors} // Use the filtered and sorted color list
-                  getOptionLabel={(option) => option || ""} // Handle undefined options
-                  inputValue={inputValue} // Control the input value
+                  options={filteredColors}
+                  getOptionLabel={(option) => option || ""}
+                  inputValue={inputValue}
                   onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue); // Update the input value when user types
+                    setInputValue(newInputValue);
                   }}
-                  onChange={(event, newValue) =>
-                    handleColorChange(event, newValue)
-                  }
+                  onChange={handleColorChange}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -545,9 +557,7 @@ export default function AddPremiumCarForm() {
                       InputLabelProps={{
                         style: {
                           fontSize: "0.75rem",
-                          // paddingTop : '20px',
-                          //  background : 'black'
-                        }, // Adjust the font size here
+                        },
                       }}
                     />
                   )}
@@ -567,9 +577,7 @@ export default function AddPremiumCarForm() {
                     })
                   }
                 >
-                  <option value="" disabled>
-                    Select Owner Serial
-                  </option>
+                  <option value="" disabled>Select Owner Serial</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -579,7 +587,7 @@ export default function AddPremiumCarForm() {
               </div>
             </div>
 
-            {/* fifth part */}
+            {/* Area and Insurance */}
             <div className="md:flex">
               <div className="mt-5 w-full">
                 <Input
@@ -608,30 +616,23 @@ export default function AddPremiumCarForm() {
                 >
                   <option value="">Car Insurance</option>
                   <option value="true">Yes</option>
-
                   <option value="false">No</option>
                 </select>
                 {showCalendar && (
                   <>
                     <div className="mt-3">
-                      <label
-                        className="block text-gray-700 text-sm font-bold "
-                        htmlFor="date"
-                      >
+                      <label className="block text-gray-700 text-sm font-bold" htmlFor="date">
                         Select Date
                       </label>
                       <input
                         type="date"
                         id="date"
-                        value={formData.insurancedate}
+                        value={formData.carInsuranceDate}
                         onChange={handleDateChange}
                         className="w-full border-2 border-gray-400 p-2 rounded-md"
                       />
                     </div>
-                    <label
-                      className="block text-gray-700 text-sm font-bold mt-2"
-                      htmlFor="date"
-                    >
+                    <label className="block text-gray-700 text-sm font-bold mt-2" htmlFor="date">
                       Insurance Type
                     </label>
                     <select
@@ -641,11 +642,9 @@ export default function AddPremiumCarForm() {
                       value={formData.carInsuranceType}
                       onChange={handleChangeType}
                     >
-                      <option value="" disabled>
-                        Insurance Type
-                      </option>
+                      <option value="" disabled>Insurance Type</option>
                       <option value="Comprehensive">Comprehensive</option>
-                      <option value="Zero Dept">Zero Depreciation </option>
+                      <option value="Zero Dept">Zero Depreciation</option>
                       <option value="Third Party">Third Party</option>
                     </select>
                   </>
@@ -653,7 +652,7 @@ export default function AddPremiumCarForm() {
               </div>
             </div>
 
-            {/* sixth part */}
+            {/* Km Driven and Fuel Type */}
             <div className="md:flex">
               <div className="mt-5 w-full">
                 <Input
@@ -684,9 +683,7 @@ export default function AddPremiumCarForm() {
                     });
                   }}
                 >
-                  <option value="" disabled>
-                    Fuel Type
-                  </option>
+                  <option value="" disabled>Fuel Type</option>
                   <option>Petrol</option>
                   <option>Diesel</option>
                   <option>Electric</option>
@@ -696,23 +693,18 @@ export default function AddPremiumCarForm() {
               </div>
             </div>
 
-            {/* eight part */}
-
+            {/* City and Registration */}
             <div className="md:flex">
               <div className="mt-5 w-full">
                 <select
                   required
                   className="w-full border-2 border-gray-400 p-2 rounded-md"
-                  label="City"
-                  name="city"
                   value={formData.city}
                   onChange={handleCityChange}
                 >
                   <option value="">Select City</option>
                   {Object.keys(cityOptions).map((city) => (
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
+                    <option key={city} value={city}>{city}</option>
                   ))}
                 </select>
               </div>
@@ -721,8 +713,6 @@ export default function AddPremiumCarForm() {
                 <select
                   required
                   className="w-full border-2 border-gray-400 p-2 rounded-md"
-                  label="Registration"
-                  name="registration"
                   value={formData.registration}
                   onChange={(event) =>
                     setFormData({
@@ -735,21 +725,18 @@ export default function AddPremiumCarForm() {
                   <option value="">Select Registration</option>
                   {formData.city &&
                     cityOptions[formData.city]?.map((reg) => (
-                      <option key={reg} value={reg}>
-                        {reg}
-                      </option>
+                      <option key={reg} value={reg}>{reg}</option>
                     ))}
                 </select>
               </div>
             </div>
-            {/* ninth part */}
-            <div className="md:flex">
-              <div className="mt-5 ml-5">
+
+            {/* Features Checkboxes */}
+            <div className="md:flex flex-wrap mt-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Music Feature"
                   type="checkbox"
                   name="musicFeature"
-                  // value={formData.musicFeature}
                   checked={formData.musicFeature}
                   onChange={(event) =>
                     setFormData({
@@ -761,12 +748,10 @@ export default function AddPremiumCarForm() {
                 Music
               </div>
 
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Power Window Feature"
                   type="checkbox"
                   name="powerWindowFeature"
-                  // value={formData.powerWindowFeature}
                   checked={formData.powerWindowFeature}
                   onChange={(event) =>
                     setFormData({
@@ -778,12 +763,10 @@ export default function AddPremiumCarForm() {
                 Power Windows
               </div>
 
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Ac Feature"
                   type="checkbox"
                   name="acFeature"
-                  // value={formData.acFeature}
                   checked={formData.acFeature}
                   onChange={(event) =>
                     setFormData({
@@ -795,12 +778,10 @@ export default function AddPremiumCarForm() {
                 Air Conditioning
               </div>
 
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Rear Parking Camera Feature"
                   type="checkbox"
                   name="rearParkingCameraFeature"
-                  // value={formData.rearParkingCameraFeature}
                   checked={formData.rearParkingCameraFeature}
                   onChange={(event) =>
                     setFormData({
@@ -811,16 +792,11 @@ export default function AddPremiumCarForm() {
                 />{" "}
                 Rear Parking Camera
               </div>
-            </div>
 
-            {/* tenth part */}
-            <div className="md:flex">
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Button Start"
                   type="checkbox"
                   name="buttonStart"
-                  // value={formData.musicFeature}
                   checked={formData.buttonStart}
                   onChange={(event) =>
                     setFormData({
@@ -832,29 +808,25 @@ export default function AddPremiumCarForm() {
                 Button Start
               </div>
 
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="ABS"
                   type="checkbox"
-                  name="abs"
-                  // value={formData.powerWindowFeature}
-                  checked={formData.abs}
+                  name="ABS"
+                  checked={formData.ABS}
                   onChange={(event) =>
                     setFormData({
                       ...formData,
-                      abs: event.target.checked,
+                      ABS: event.target.checked,
                     })
                   }
                 />{" "}
                 ABS
               </div>
 
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Sunroof"
                   type="checkbox"
                   name="sunroof"
-                  // value={formData.acFeature}
                   checked={formData.sunroof}
                   onChange={(event) =>
                     setFormData({
@@ -866,12 +838,10 @@ export default function AddPremiumCarForm() {
                 Sunroof
               </div>
 
-              <div className="mt-5 ml-5">
+              <div className="ml-5 mb-2">
                 <input
-                  label="Child Safety Locks"
                   type="checkbox"
                   name="childSafetyLocks"
-                  // value={formData.rearParkingCameraFeature}
                   checked={formData.childSafetyLocks}
                   onChange={(event) =>
                     setFormData({
@@ -882,12 +852,11 @@ export default function AddPremiumCarForm() {
                 />{" "}
                 Child Safety Locks
               </div>
-              <div className="mt-5 ml-5">
+
+              <div className="ml-5 mb-2">
                 <input
-                  label="AirBag"
                   type="checkbox"
                   name="airbag"
-                  // value={formData.musicFeature}
                   checked={formData.airbag}
                   onChange={(event) =>
                     setFormData({
@@ -900,7 +869,7 @@ export default function AddPremiumCarForm() {
               </div>
             </div>
 
-            {/* tenth part */}
+            {/* Title */}
             <div className="mt-5 mb-2">
               <h4>Title</h4>
               <div className="formrow">
@@ -916,11 +885,11 @@ export default function AddPremiumCarForm() {
                       title: event.target.value,
                     });
                   }}
-                ></Input>
+                />
               </div>
             </div>
-            {/* eleventh part */}
 
+            {/* Description */}
             <div className="mt-5">
               <h4>Vehicle Description</h4>
               <div className="formrow">
@@ -936,17 +905,15 @@ export default function AddPremiumCarForm() {
                       description: event.target.value,
                     });
                   }}
-                ></Textarea>
+                />
               </div>
             </div>
-            {/* twelth part */}
 
+            {/* Submit Button */}
             <button
               type="submit"
               className="p-3 mt-3 bg-indigo-400 rounded-md w-28 text-white"
-              value="Add  Car"
             >
-              {" "}
               Next
             </button>
           </form>

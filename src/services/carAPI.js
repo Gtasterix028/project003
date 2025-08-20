@@ -108,15 +108,17 @@ export const carApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["CAR"],
     }),
-    carRegisterPremium: builder.mutation({  
-      query: (data, carType) => ({
-       url: `/car/carregister`,
 
-        body: data,
+carRegisterPremium: builder.mutation({
+      query: (data) => ({
+        url: "/premiumCars/register",
         method: "POST",
+        body: data,
       }),
       invalidatesTags: ["CAR"],
     }),
+
+
     carUpdate: builder.mutation({
       query: ({ data, carId }) => ({
         url: `/car/edit/${carId}`,

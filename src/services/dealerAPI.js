@@ -76,6 +76,25 @@ export const dealerAPI = apiSlice.injectEndpoints({
     }),
 
 addCarImages: builder.mutation({
+      query: ({ formData, document, firstCarId, UserID }) => ({
+        url: `/uploadFile/add?documentType=${document}&userId=${UserID}&carId=${firstCarId}`,
+        // transerResponse: console.log(
+        //   "APi response",
+        //   formData,
+        //   firstCarId,
+        //   document,
+        //   UserID
+        // ),
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Dealer"],
+    }),
+ 
+
+
+
+addCarImagesP: builder.mutation({
   query: ({ file, documentType, premiumCarId, userId }) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -87,6 +106,8 @@ addCarImages: builder.mutation({
   },
   invalidatesTags: ["Dealer"],
 }),
+
+
 
 
 
@@ -169,6 +190,7 @@ export const {
   useGetAllDealerPendingBookingQuery,
   useGetAllPendingB2BRequestQuery,
   useAddCarImagesMutation,
+   useAddCarImagesPMutation,
   useDealerStatusMutation,
   useGetAllDealerListQuery,
   useCancelStatusSetMutation,
