@@ -41,7 +41,7 @@ export const carApi = apiSlice.injectEndpoints({
         } = urlState || {};
 
         return {
-          url: `/cars/mainFilter?minPrice=${MinPrice}&maxPrice=${MaxPrice}&area=${Area}&year=${Year}&brand=${Brand}&model=${Model}&transmission=${Transmission}&fuelType=${FuleType}&carType=premium`,
+          url: `/PremiumCarFilter/mainFilter?minPrice=${MinPrice}&maxPrice=${MaxPrice}&area=${Area}&year=${Year}&brand=${Brand}&model=${Model}&transmission=${Transmission}&fuelType=${FuleType}&carType=premium`,
           method: "GET",
         };
       },
@@ -111,7 +111,7 @@ export const carApi = apiSlice.injectEndpoints({
 
 carRegisterPremium: builder.mutation({
       query: (data) => ({
-        url: "/premiumCars/register",
+        url: `/premiumCars/register`,
         method: "POST",
         body: data,
       }),

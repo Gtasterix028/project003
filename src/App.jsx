@@ -40,6 +40,7 @@ import BiddingCarDetailsById from "./pages/bidding/BiddingCarDetailsById";
 import DealerPendingRequest from "./pages/dealer/DealerPendingRequest";
 import BiddingDealerPendingReq from "./pages/bidding/BiddingDealerPendingReq";
 import Uploadimages2 from "./ui/UploadImages2";
+import UploadImagesp from "./ui/UploadImagesp";
 import InspectorList from "./pages/adminpages/InspectorList";
 import CarInspectionTable from "./pages/CarInspectionTable";
 import CarVerify from "./pages/Inspector/CarVerify";
@@ -266,6 +267,12 @@ export default function App() {
             <Route
               path="/dealer/:id/uploadimage/:carId"
               element={<Uploadimages2 />}
+              />
+
+              <Route
+              path="/dealer/:id/uploadimagep/:carId"
+              element={<UploadImagesp />}
+            
             />
             <Route path="/dealer/:id/edit" element={<DealerEdit />} />
             <Route

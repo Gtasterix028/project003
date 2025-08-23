@@ -95,17 +95,22 @@ addCarImages: builder.mutation({
 
 
 addCarImagesP: builder.mutation({
-  query: ({ file, documentType, premiumCarId, userId }) => {
+  query: ({ file, document, premiumCarId, userId }) => {
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", file);  
+    formData.append("documentType", document);
+    formData.append("userId", userId);
+    formData.append("premiumCarId", premiumCarId);
+
     return {
-      url: `/PremiumCarUploadFile/add?documentType=${documentType}&userId=${userId}&premiumCarId=${premiumCarId}`,
+      url: `/PremiumCarUploadFile/add`,
       method: "POST",
       body: formData,
     };
   },
   invalidatesTags: ["Dealer"],
 }),
+
 
 
 
@@ -190,7 +195,7 @@ export const {
   useGetAllDealerPendingBookingQuery,
   useGetAllPendingB2BRequestQuery,
   useAddCarImagesMutation,
-   useAddCarImagesPMutation,
+  useAddCarImagesPMutation,
   useDealerStatusMutation,
   useGetAllDealerListQuery,
   useCancelStatusSetMutation,
