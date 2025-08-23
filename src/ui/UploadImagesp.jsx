@@ -120,49 +120,25 @@ function UploadImagesp() {
         // Update status to uploading
         updateImageStatus(categoryValue, item.documentId, 'uploading');
         
-        // Create FormData manually to ensure proper formatting
-        const formData = new FormData();
-        formData.append("image", item.file);
-        formData.append("documentType", documentType);
-        formData.append("premiumCarId", premiumCarIdInt.toString()); // Convert to string for FormData
-        formData.append("userId", userIdInt.toString()); // Convert to string for FormData
-
-        console.log("FormData contents:");
-        for (let [key, value] of formData.entries()) {
-          console.log(key, value, typeof value);
-        }
-
-        // Use fetch directly to debug the issue
-        const response = await fetch('/PremiumCarUploadFile/add', {
-          method: 'POST',
-          body: formData,
-          // headers are not needed for FormData, browser sets them automatically
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          console.log("Upload successful:", result);
-          updateImageStatus(categoryValue, item.documentId, 'success');
-          toast.success(`${item.file.name} uploaded successfully!`);
-        } else {
-          const errorData = await response.json();
-          console.error("Upload failed:", errorData);
-          throw new Error(errorData.detail || `Upload failed with status ${response.status}`);
-        }
-
-        // Alternative: Use the mutation hook if you prefer
-        // await addCarImagesP({
-        //   file: item.file,
-        //   document: documentType,
-        //   premiumCarId: premiumCarIdInt,
-        //   userId: userIdInt
-        // }).unwrap();
+        // Use the mutation hook
+        await addCarImagesP({
+          file: item.file,
+          document: documentType,
+          premiumCarId: premiumCarIdInt,
+          userId: userIdInt
+        }).unwrap();
+        
+        // Update status to success
+        updateImageStatus(categoryValue, item.documentId, 'success');
+        toast.success(`${item.file.name} uploaded successfully!`);
         
       } catch (error) {
         console.error('Upload error:', error);
         updateImageStatus(categoryValue, item.documentId, 'error');
         
-        if (error.message) {
+        if (error.data && error.data.detail) {
+          toast.error(`Upload failed: ${error.data.detail}`);
+        } else if (error.message) {
           toast.error(`Upload failed: ${error.message}`);
         } else {
           toast.error(`Failed to upload ${item.file.name}`);
@@ -208,8 +184,7 @@ function UploadImagesp() {
     <div className="flex justify-center p-4 bg-gray-50 min-h-screen">
       <div className="w-full max-w-6xl bg-white rounded-lg shadow-md p-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-2">Add Premium Car Images</h2>
-        <p className="text-gray-600 mb-6">Car ID: {carId} (Type: {typeof carId})</p>
-        <p className="text-gray-600 mb-6">User ID: {userId} (Type: {typeof userId})</p>
+        <p className="text-gray-600 mb-6">Car ID: {carId}</p>
         
         <Tabs value={activeTab} onChange={setActiveTab}>
           <TabsHeader className="bg-blue-50 p-1 rounded-lg">
