@@ -168,54 +168,20 @@ const BuyCar = () => {
     refetch();
   }, [currentPage, urlState, refetch]);
 
-  // Calculate pagination
-  const totalCars = data?.list?.length || 0;
-  const totalPages = Math.ceil(totalCars / carsPerPage);
-  const startIndex = (currentPage - 1) * carsPerPage;
-  const endIndex = startIndex + carsPerPage;
-  const currentCars = data?.list?.slice(startIndex, endIndex) || [];
+  // Server-side pagination: use the page returned by API directly
+  const currentCars = data?.list || [];
+  const hasNextPage = currentCars.length === carsPerPage;
 
   // Generate page numbers to display
   const getPageNumbers = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
-    
-    if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is small
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Show limited pages with ellipsis
-      if (currentPage <= 3) {
-        // Show first 3 pages + ellipsis + last page
-        for (let i = 1; i <= 3; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        // Show first page + ellipsis + last 3 pages
-        pages.push(1);
-        pages.push('...');
-        for (let i = totalPages - 2; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        // Show first page + ellipsis + current page + ellipsis + last page
-        pages.push(1);
-        pages.push('...');
-        pages.push(currentPage);
-        pages.push('...');
-        pages.push(totalPages);
-      }
-    }
-    
+    // Only show the current page, and the next page if more data likely exists
+    const pages = [currentPage];
+    if (hasNextPage) pages.push(currentPage + 1);
     return pages;
   };
 
   const handlePageChange = (page) => {
-    if (page !== '...' && page >= 1 && page <= totalPages) {
+    if (page !== '...' && page >= 1) {
       setCurrentPage(page);
       // Scroll to top when page changes
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -277,8 +243,7 @@ const BuyCar = () => {
         <hr/>
         <h1 className="w-full mt-2 text-2xl md:text-2xl font-bold mb-2 text-gray-900">Explore Our Exclusive Collection Of Premium Cars</h1>
         <p className=" text-gray-400 text-sm md:text-base w-full">
-          Lorem Ipsum Dolor Sit Amet Consectetur. Ipsum Consectetur Vestibulum Tellus Viverra Id Ut Sit In Vestibulum Tellus Viverra Id Ut Sit In Vestibulum Tellus Viverra Id Ut Sit In.
-        </p>
+         </p>
       </div>
       <div className="container mx-auto px-4">
 
@@ -312,9 +277,10 @@ const BuyCar = () => {
 
           {/* Right: results text */}
           <span className="text-sm text-gray-500">
-            Showing {startIndex + 1} - {Math.min(endIndex, totalCars)} of {totalCars} results
+            Showing {currentCars.length} results
           </span>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 lg:gap-6    ">
           
@@ -381,7 +347,7 @@ const BuyCar = () => {
         </div>
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
+        {(currentCars.length > 0 || currentPage > 1) && (
           <div className="flex justify-center mt-8 mb-8">
             <div className="flex items-center space-x-2">
               {/* Previous button */}
@@ -418,9 +384,9 @@ const BuyCar = () => {
               {/* Next button */}
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                disabled={!hasNextPage}
                 className={`px-3 py-2 rounded-lg border border-gray-300 text-sm font-medium transition-colors ${
-                  currentPage === totalPages
+                  !hasNextPage
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     : 'bg-white text-gray-700 hover:bg-orange-500 hover:text-white hover:border-orange-500'
                 }`}

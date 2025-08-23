@@ -19,9 +19,6 @@ const CarBanner = () => (
           </div>
 
           <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Duis id ullamcorper iaculis
-            in arcu. At morbi lacus diam sagittis erat consequat eu metus.
-            Cursus maecenas vulputate vitae augue id.
           </p>
         </div>
       </div>

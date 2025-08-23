@@ -169,7 +169,7 @@ carRegisterPremium: builder.mutation({
 
     getCarImageById: builder.query({
       query: ({ carId }) => ({
-        url: `/uploadFile/getByCarID?carId=${carId} `,
+        url: `/uploadFile/getByCarID?carId=${carId}`,
 
         method: "GET",
       }),

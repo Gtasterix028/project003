@@ -78,8 +78,6 @@ const PremiumCarList = () => {
 
           {/* Subheading paragraph */}
           <p className="text-white text-center text-lg leading-6 max-w-[600px]">
-            Lorem ipsum dolor sit amet consectetur. Malesuada erat leo senectus
-            non. Donec nunc sed mauris faucibus ut.
           </p>
         </div>
         </div>

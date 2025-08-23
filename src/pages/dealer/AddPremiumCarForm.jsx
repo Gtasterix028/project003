@@ -193,9 +193,10 @@ try {
       const res = await carRegister(data).unwrap();
       if (res?.status === "success") {
         toast.success("Car Added Successfully!");
+        const premiumCarId = res?.premiumCarId;
         const mainCarId = res.message.split(":").pop().trim();
         setTimeout(() => {
-          navigate(`/dealer/${id}/uploadimagep/${mainCarId}`);
+          navigate(`/dealer/${id}/uploadimagep/${premiumCarId ?? mainCarId}`);
         }, 1500); 
       }
     } catch (err) {

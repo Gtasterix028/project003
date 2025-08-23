@@ -14,7 +14,7 @@ import {
   useCarremoveFavoriteMutation,
   useCarFavoriteAddRemoveQuery,
 } from "../services/carAPI";
-import { useGetDealerQuery } from "../services/dealerAPI";
+// removed dealer info from card
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +25,7 @@ import TransmissionIcon from "@mui/icons-material/Settings";
 import { FaArrowRight } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import CheckCircle from "@mui/icons-material/CheckCircle";
+import { useGetCarImageByIdQuery } from "../services/carAPI";
 
 function RatedIcon() {
   return (
@@ -82,10 +83,6 @@ console.log("this is images ",data,data.images,data.carImage);
     refetch: refetchFavCarData,
   } = useCarFavoriteAddRemoveQuery({ carid, useid });
 
-  const { data: dealerData, isLoading: dealerLoading } = useGetDealerQuery(
-    { id: data.dealerId },
-    { skip: !data.dealerId }
-  );
 
   const [CarremoveFavorite] = useCarremoveFavoriteMutation();
 
@@ -101,16 +98,6 @@ console.log("this is images ",data,data.images,data.carImage);
     }
   };
 
-  const seller = {
-    name:
-      dealerData?.dealerName || data.dealerName || data.sellerName || "Seller",
-    ownership: data.ownerType || data.ownership || "First Owner",
-    profileImg:
-      dealerData?.profileImage ||
-      data.dealerProfileImage ||
-      data.sellerImg ||
-      "/logos/dummy-profile-pic.jpg",
-  };
 
   const combinedText = `${data.year || ""} ${data.brand || ""} ${
     data.model || ""
@@ -135,18 +122,30 @@ console.log("this is images ",data,data.images,data.carImage);
     return `${km.toLocaleString()} Kms`;
   };
 
-  // 🔥 FIX: Safe states for images
+  // 🔥 Prefer coverImage from service if available, else fallback to provided fields
   const [carImg, setCarImg] = useState(
     data.images?.[0] || data.carImage || "/wrong-path/no-car.png"
   );
-  const [sellerImg, setSellerImg] = useState(
-    seller.profileImg || "/logos/dummy-profile-pic.jpg"
-  );
+  // seller info removed from the card UI
+
+  const { data: imagesData } = useGetCarImageByIdQuery({ carId: data.carId }, { skip: !data?.carId });
+
+  useEffect(() => {
+    if (imagesData && Array.isArray(imagesData.object)) {
+      const cover = imagesData.object.find((img) => img.documentType === "coverImage" && img.documentLink);
+      const first = imagesData.object.find((img) => img.documentLink);
+      if (cover?.documentLink) {
+        setCarImg(cover.documentLink);
+      } else if (first?.documentLink) {
+        setCarImg(first.documentLink);
+      }
+    }
+  }, [imagesData]);
 
   return (
     <div
-      className="w-full bg-white rounded-xl shadow border border-gray-200 hover:shadow-lg transition-all 
-      flex flex-col md:flex-row items-center p-4 mb-4 max-w-4xl mx-auto"
+      className="w-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 
+      flex flex-col md:flex-row items-center justify-center p-6 mb-6 max-w-4xl mx-auto"
     >
       {/* Car Image */}
       <div className="w-full h-48 md:w-64 md:h-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -161,7 +160,7 @@ console.log("this is images ",data,data.images,data.carImage);
       </div>
 
       {/* Car Info */}
-      <div className="flex-1 px-0 md:px-6 flex flex-col justify-between h-full min-w-0 mt-3 md:mt-0">
+      <div className="flex-1 px-0 md:px-6 flex flex-col items-center text-center justify-between h-full min-w-0 mt-3 md:mt-0">
         <div className="flex items-center mb-1">
           <span className="text-xs text-orange-500 font-semibold mr-2">
             {data.bodyType || "Sedan"}
@@ -170,7 +169,7 @@ console.log("this is images ",data,data.images,data.carImage);
         <div className="font-semibold text-lg text-gray-900 truncate">
           {combinedText}
         </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-gray-500 text-sm mt-1 mb-2">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-gray-500 text-sm mt-1 mb-2">
           <span className="flex items-center">
             <DriveEtaIcon
               className="text-green-600 mr-1"
@@ -204,36 +203,10 @@ console.log("this is images ",data,data.images,data.carImage);
           {formatPrice(data.price)}
         </div>
         <Link to={`/carlist/cardetails/${data.carId}`}>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition flex items-center text-sm font-semibold w-full sm:w-auto justify-center">
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition flex items-center text-sm font-semibold w-full sm:w-auto justify-center">
             View Details <FaArrowRight className="ml-2" />
           </button>
         </Link>
-      </div>
-
-      {/* Seller Info */}
-      <div className="flex flex-col items-center justify-center w-full md:w-32 md:border-l md:pl-4 min-h-[100px]">
-        {dealerLoading ? (
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-gray-200 animate-pulse mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-16 animate-pulse mb-1"></div>
-            <div className="h-3 bg-gray-200 rounded w-12 animate-pulse"></div>
-          </div>
-        ) : (
-          <>
-            <img
-              src={sellerImg}
-              alt={seller.name || "Seller"}
-              className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 mb-2"
-              onError={() => setSellerImg("/logos/dummy-profile-pic.jpg")}
-            />
-            <div className="text-gray-900 font-semibold text-xs text-center truncate w-full">
-              {seller.name}
-            </div>
-            <div className="text-gray-500 text-xs text-center">
-              {seller.ownership}
-            </div>
-          </>
-        )}
       </div>
     </div>
   );
