@@ -62,7 +62,7 @@ export function CardDefault({ data, Carid, refetch, isLoading }) {
   const dispatch = useDispatch();
   const favoriteCars = useSelector((state) => state.favorites.favoriteCars);
   const [isHovered, setIsHovered] = useState(false);
-
+console.log("this is images ",data,data.images,data.carImage);
   const [favoriteCar] = useFavoriteCarMutation();
   const token = Cookies.get("token");
   let jwtDecodes;

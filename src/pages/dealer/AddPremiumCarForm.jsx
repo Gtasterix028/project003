@@ -82,7 +82,6 @@ export default function AddPremiumCarForm() {
     .sort();
   
   const { carType: carTypeParam } = useParams();
-  console.log("carType from params:", carTypeParam);
   
   const [carRegister] = useCarRegisterPremiumMutation();
   const [error, setError] = useState(false);
@@ -94,13 +93,6 @@ export default function AddPremiumCarForm() {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
-
-  // Generate mainCarId function
-  const generateMainCarId = () => {
-    const brandAbbr = formData.brand?.replace(/\s+/g, '').substring(0, 5) || 'TEMP';
-    const modelAbbr = formData.model?.replace(/\s+/g, '').substring(0, 5) || 'TEMP';
-    return `MC-${brandAbbr}-${modelAbbr}-${Date.now()}`;
-  };
 
   const [formData, setFormData] = useState({
     // features
@@ -116,7 +108,7 @@ export default function AddPremiumCarForm() {
 
     // car details
     brand: "",
-    cVariant: "",
+    variant: "",
     price: "",
     model: "",
     year: "",
@@ -131,24 +123,12 @@ export default function AddPremiumCarForm() {
     area: "",
 
     // insurance
-    carInsurance: false,
+    carInsurance: "",
     carInsuranceDate: "",
     carInsuranceType: "",
 
-    // status
-    carStatus: "PENDING",
-    pendingApproval: false,
-
     // ownership
     ownerSerial: "",
-    dealerId: "",
-
-    // extra fields
-    pendingBookings: [],
-    carPhotoId: 0,
-    mainCarId: "",
-    carType: carTypeParam || "",
-    premiumCarPendingBookingId: [],
   });
 
   const handleSubmit = async (event) => {
@@ -164,10 +144,7 @@ export default function AddPremiumCarForm() {
     }
 
     // Clean variant field
-    const cleanedVariant = formData.cVariant?.replace(/\r/g, '').trim();
-
-    // Generate mainCarId
-    const mainCarId = generateMainCarId();
+    const cleanedVariant = formData.variant?.replace(/\r/g, '').trim();
 
     const data = {
       // Features
@@ -184,7 +161,7 @@ export default function AddPremiumCarForm() {
       // Car details
       area: formData.area,
       brand: formData.brand,
-      variant: cleanedVariant, // Use cleaned variant
+      variant: cleanedVariant,
       color: formData.color,
       description: formData.description,
       fuelType: formData.fuelType,
@@ -204,35 +181,25 @@ export default function AddPremiumCarForm() {
       carInsuranceType: formData.carInsuranceType || "",
 
       // Status
-      carStatus: "PENDING",
-      pendingApproval: false,
+      pendingApproval: true,
 
       // Required fields
       dealerId: parseInt(id, 10),
       date: formattedDate,
-      carPhotoId: 0,
-      mainCarId: mainCarId,
-      carType: formData.carType,
-      premiumCarPendingBookingId: [],
-
-      // Optional fields
-      pendingBookings: [],
     };
 
-    console.log("Final Payload:", JSON.stringify(data, null, 2));
 
-    try {
+try {
       const res = await carRegister(data).unwrap();
       if (res?.status === "success") {
         toast.success("Car Added Successfully!");
         const mainCarId = res.message.split(":").pop().trim();
         setTimeout(() => {
-          navigate(`/dealer/${id}/uploadimage/${mainCarId}`);
-        }, 1500);
+          navigate(`/dealer/${id}/uploadimagep/${mainCarId}`);
+        }, 1500); 
       }
     } catch (err) {
       console.error("Full error:", err);
-      console.error("Error response:", err.data);
       
       if (err.data) {
         toast.error(err.data.message || "Failed to register car");
@@ -252,7 +219,7 @@ export default function AddPremiumCarForm() {
       ...formData,
       brand,
       model: "",
-      cVariant: "",
+      variant: "",
     });
   };
 
@@ -262,15 +229,15 @@ export default function AddPremiumCarForm() {
     setFormData({
       ...formData,
       model,
-      cVariant: "",
+      variant: "",
     });
   };
 
   const handleVariantChange = (event, newValue) => {
-    const cVariant = newValue?.replace(/\r/g, '').trim();
+    const variant = newValue?.replace(/\r/g, '').trim();
     setFormData({
       ...formData,
-      cVariant,
+      variant,
     });
   };
 
